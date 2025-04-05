@@ -14,7 +14,7 @@
 
 - [MCP Server →](https://github.com/chargebee/agentkit/tree/main/modelcontextprotocol)
 
-### 👨‍💻 Built for Developers
+### 👨‍💻 Your Stack, Our SDKs
 
 We’re obsessed with making life easier for developers. All our SDKs are open source, thoughtfully designed, and constantly evolving based on real-world feedback. Whether you're building a quick prototype or scaling a complex system, these tools are here to help you move fast and build right.
 

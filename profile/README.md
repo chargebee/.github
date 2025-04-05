@@ -2,7 +2,7 @@
 
 [Chargebee](https://www.chargebee.com) is a Revenue Growth Management (RGM) platform that helps subscription businesses manage subscriptions, billing, revenue recognition, collections, and customer retention, essentially streamlining the entire subscription lifecycle. 
 
-## Getting Started
+### 🚀 Getting Started
 
 - [Quickstart →](https://www.chargebee.com/tutorials/quickstart/)
 - [API Docs →](https://apidocs.chargebee.com/docs/api/)
@@ -10,15 +10,15 @@
 - [Partner SPI →](https://spidocs.chargebee.com/api-reference/partner-spi/overview)
 
 
-**Building with LLMs**
+### 🧠 AI & LLM Integrations
 
 - [MCP Server →](https://github.com/chargebee/agentkit/tree/main/modelcontextprotocol)
 
-## We ❤️ open source
+### 👨‍💻 Your Stack, Our SDKs
 
 All our SDKs are open source. We are always looking for new ways to improve the experience for developers. We welcome feedback, bug reports, and feature requests from the community!
 
-- [Node](https://github.com/chargebee/chargebee-node)
+- [Node.js](https://github.com/chargebee/chargebee-node)
 - [Java](https://github.com/chargebee/chargebee-java)
 - [PHP](https://github.com/chargebee/chargebee-php)
 - [Ruby](https://github.com/chargebee/chargebee-ruby)
@@ -28,10 +28,10 @@ All our SDKs are open source. We are always looking for new ways to improve the 
 - [Laravel Cashier](https://github.com/chargebee/cashier-chargebee)
 
 
-## Follow Us
+### 💬 Follow Us
 - Check out our [Engineering Blog](https://medium.com/chargebee-engineering).
 - Follow us on [X.com](https://x.com/chargebee) and [LinkedIn](https://in.linkedin.com/company/chargebee)
 
-## Contact Us
+### 📬 Contact Us
 - Got any feedback / questions on the developer experience? Reach out to us on dx@chargebee.com
 - For any other support, reach out to us on support@chargebee.com

@@ -16,7 +16,7 @@
 
 ### 👨‍💻 Your Stack, Our SDKs
 
-We’re obsessed with making life easier for developers. All our SDKs are open source, thoughtfully designed, and constantly evolving based on real-world feedback. Whether you're building a quick prototype or scaling a complex system, these tools are here to help you move fast and build right.
+All our SDKs are open source. We are always looking for new ways to improve the experience for developers. We welcome feedback, bug reports, and feature requests from the community!
 
 - [Node.js](https://github.com/chargebee/chargebee-node)
 - [Java](https://github.com/chargebee/chargebee-java)

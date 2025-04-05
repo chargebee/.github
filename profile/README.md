@@ -18,7 +18,7 @@
 
 We’re obsessed with making life easier for developers. All our SDKs are open source, thoughtfully designed, and constantly evolving based on real-world feedback. Whether you're building a quick prototype or scaling a complex system, these tools are here to help you move fast and build right.
 
-- [Node](https://github.com/chargebee/chargebee-node)
+- [Node.js](https://github.com/chargebee/chargebee-node)
 - [Java](https://github.com/chargebee/chargebee-java)
 - [PHP](https://github.com/chargebee/chargebee-php)
 - [Ruby](https://github.com/chargebee/chargebee-ruby)

@@ -14,11 +14,11 @@
 
 - [MCP Server →](https://github.com/chargebee/agentkit/tree/main/modelcontextprotocol)
 
-## We ❤️ open source
+## Your Stack, Our SDKs
 
 All our SDKs are open source. We are always looking for new ways to improve the experience for developers. We welcome feedback, bug reports, and feature requests from the community!
 
-- [Node](https://github.com/chargebee/chargebee-node)
+- [Node.js](https://github.com/chargebee/chargebee-node)
 - [Java](https://github.com/chargebee/chargebee-java)
 - [PHP](https://github.com/chargebee/chargebee-php)
 - [Ruby](https://github.com/chargebee/chargebee-ruby)

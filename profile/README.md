@@ -13,6 +13,7 @@
 ### 🧠 AI & LLM Integrations
 
 - [MCP Server →](https://github.com/chargebee/agentkit/tree/main/modelcontextprotocol)
+- [API Explorer →](https://api-explorer.chargebee.com?utm_source=github_profile)
 
 ### 👨‍💻 Your Stack, Our SDKs
 

@@ -28,6 +28,10 @@ All our SDKs are open source. We are always looking for new ways to improve the 
 - [Go](https://github.com/chargebee/chargebee-go)
 - [Laravel Cashier](https://github.com/chargebee/cashier-chargebee)
 
+### 🛠️ SDK Generator & OpenAPI
+
+- Our SDK generator is open source: [chargebee/sdk-generator](https://github.com/chargebee/sdk-generator)
+- OpenAPI specification is available at [chargebee/openapi](https://github.com/chargebee/openapi)
 
 ### 💬 Follow Us
 - Check out our [Engineering Blog](https://medium.com/chargebee-engineering).

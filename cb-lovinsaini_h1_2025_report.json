@@ -1,0 +1,23 @@
+{
+  "user": "cb-lovinsaini",
+  "window": {
+    "start": "2025-01-01T00:00:00Z",
+    "end": "2025-06-30T23:59:59Z"
+  },
+  "totals": {
+    "prs_opened": 0,
+    "prs_merged": 0,
+    "pr_additions": 0,
+    "pr_deletions": 0,
+    "commits": 0,
+    "commit_additions": 0,
+    "commit_deletions": 0,
+    "issues_opened": 0,
+    "issues_closed": 0,
+    "incident_issues": 0,
+    "incident_mttr_hours_avg": null
+  },
+  "prs": [],
+  "issues": [],
+  "commits": []
+}

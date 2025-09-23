@@ -1,0 +1,23 @@
+{
+  "user": "cb-vamsikrishnakayyala",
+  "start_date": "2025-01-01",
+  "end_date": "2025-06-30",
+  "generated_at": "2025-09-23T16:26:44.556891+00:00",
+  "pull_requests": [],
+  "issues": [],
+  "reviews": [],
+  "aggregates": {
+    "prs_created": 0,
+    "prs_merged": 0,
+    "lines_added": 0,
+    "lines_deleted": 0,
+    "files_changed": 0,
+    "avg_cycle_time_days": null,
+    "repos_contributed": [],
+    "issues_created": 0,
+    "avg_issue_close_time_days": null,
+    "incident_issues_count": 0,
+    "avg_incident_mttr_days": null,
+    "prs_reviewed": 0
+  }
+}

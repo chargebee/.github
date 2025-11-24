@@ -42,15 +42,20 @@
         padding: 32px 16px 64px;
       }
 
-      main {
-        width: min(600px, 100%);
+      .app {
+        width: min(1100px, 100%);
+        display: flex;
+        gap: 32px;
+      }
+
+      aside {
+        width: 320px;
       }
 
       h1 {
         color: #e0ecff;
         font-size: clamp(1.75rem, 3vw, 2.4rem);
-        margin: 0 0 20px;
-        text-align: center;
+        margin: 0 0 24px;
       }
 
       ul {
@@ -77,7 +82,8 @@
         font-weight: 600;
       }
 
-      button {
+      button,
+      .link {
         border: none;
         background: transparent;
         color: var(--blue);
@@ -85,18 +91,13 @@
         cursor: pointer;
       }
 
-      .backdrop {
-        position: fixed;
-        inset: 0;
-        background: var(--overlay);
-        display: none;
-        align-items: center;
-        justify-content: center;
-        z-index: 10;
-      }
-
-      .backdrop.active {
+      .stage {
+        flex: 1;
+        min-height: 520px;
         display: flex;
+        justify-content: flex-end;
+        align-items: flex-start;
+        padding-right: 12px;
       }
 
       .modal {
@@ -105,15 +106,19 @@
         border-radius: 6px;
         box-shadow: var(--shadow);
         overflow: hidden;
-        display: flex;
+        display: none;
         flex-direction: column;
         position: relative;
       }
 
+      .modal.active {
+        display: flex;
+      }
+
       .close {
         position: absolute;
-        top: -14px;
-        right: -14px;
+        top: 12px;
+        right: 12px;
         width: 32px;
         height: 32px;
         border-radius: 999px;
@@ -125,7 +130,6 @@
         font-weight: 700;
         color: #596275;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
-        cursor: pointer;
       }
 
       .modal__header {
@@ -239,13 +243,6 @@
         padding: 2px 6px;
       }
 
-      .brand {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        font-weight: 700;
-      }
-
       .note {
         margin-top: 12px;
         background: var(--note);
@@ -273,23 +270,12 @@
         flex: 0 0 18px;
       }
 
-      .note p {
-        margin: 0;
-      }
-
       .links {
         margin: 16px 0 0;
         display: flex;
         flex-direction: column;
         gap: 12px;
         align-items: flex-start;
-      }
-
-      .link {
-        color: var(--blue);
-        font-size: 14px;
-        font-weight: 600;
-        text-decoration: none;
       }
 
       .list-option {
@@ -340,48 +326,50 @@
     </style>
   </head>
   <body>
-    <main>
-      <h1>Available Widgets</h1>
-      <ul>
-        <li>
-          <span>View / Edit Subscription details</span>
-          <button data-widget="subscription">Demo</button>
-        </li>
-        <li>
-          <span>Manage payment methods</span>
-          <button data-widget="payments">Demo</button>
-        </li>
-        <li>
-          <span>Billing History</span>
-          <button data-widget="billing">Demo</button>
-        </li>
-        <li>
-          <span>Manage Addresses</span>
-          <button data-widget="addresses">Demo</button>
-        </li>
-        <li>
-          <span>Manage account information</span>
-          <button data-widget="account">Demo</button>
-        </li>
-      </ul>
-    </main>
+    <div class="app">
+      <aside>
+        <h1>Available Widgets</h1>
+        <ul>
+          <li>
+            <span>View / Edit Subscription details</span>
+            <button data-widget="subscription">Demo</button>
+          </li>
+          <li>
+            <span>Manage payment methods</span>
+            <button data-widget="payments">Demo</button>
+          </li>
+          <li>
+            <span>Billing History</span>
+            <button data-widget="billing">Demo</button>
+          </li>
+          <li>
+            <span>Manage Addresses</span>
+            <button data-widget="addresses">Demo</button>
+          </li>
+          <li>
+            <span>Manage account information</span>
+            <button data-widget="account">Demo</button>
+          </li>
+        </ul>
+      </aside>
 
-    <div class="backdrop" id="backdrop" aria-hidden="true">
-      <article class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-        <button class="close" aria-label="Close" id="close-btn">✕</button>
-        <div class="modal__header">
-          <button class="modal__back" id="back-btn" aria-label="Go back">‹</button>
-          <h2 class="modal__title" id="modal-title">Subscription Details</h2>
-        </div>
-        <div class="modal__body">
-          <div class="content" id="modal-content"></div>
-        </div>
-      </article>
+      <section class="stage">
+        <article class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" id="modal">
+          <button class="close" aria-label="Close" id="close-btn">✕</button>
+          <div class="modal__header">
+            <button class="modal__back" id="back-btn" aria-label="Go back">‹</button>
+            <h2 class="modal__title" id="modal-title">Subscription Details</h2>
+          </div>
+          <div class="modal__body">
+            <div class="content" id="modal-content"></div>
+          </div>
+        </article>
+      </section>
     </div>
 
     <script>
       const buttons = document.querySelectorAll("button[data-widget]");
-      const backdrop = document.getElementById("backdrop");
+      const modal = document.getElementById("modal");
       const closeBtn = document.getElementById("close-btn");
       const backBtn = document.getElementById("back-btn");
       const modalTitle = document.getElementById("modal-title");
@@ -458,16 +446,12 @@
           <div class="card">
             <div class="row">
               <div class="row__label">Primary</div>
-              <div class="row__content">
-                <div class="brand"><span class="badge">VISA</span> ending 1111</div>
-              </div>
+              <div class="row__content"><span class="badge">VISA</span> ending 1111</div>
               <div class="row__chev">›</div>
             </div>
             <div class="row">
               <div class="row__label">Backup</div>
-              <div class="row__content">
-                <div class="brand"><span class="badge">VISA</span> ending 2222</div>
-              </div>
+              <div class="row__content"><span class="badge">VISA</span> ending 2222</div>
               <div class="row__chev">›</div>
             </div>
           </div>
@@ -476,7 +460,7 @@
             <p>Backups come handy when your primary payment fails. Set a backup.</p>
           </div>
           <div class="links">
-            <a class="link" href="#">Add new</a>
+            <button class="link">Add new</button>
           </div>
         `,
         billing: () => {
@@ -560,6 +544,15 @@
         return addon?.frequencies.find((f) => f.id === state.addonSettings[id].frequency);
       }
 
+      function calculateTotal() {
+        const planPrice = getPlan().price;
+        const addonsTotal = Array.from(state.addons).reduce((sum, id) => {
+          const freq = getAddonFrequency(id);
+          return sum + (freq?.price || 0);
+        }, 0);
+        return planPrice + addonsTotal;
+      }
+
       function renderSubscription(screen) {
         state.currentScreen = screen;
         modalTitle.textContent = screenTitles[screen];
@@ -596,8 +589,8 @@
               </div>
             </div>
             <div class="links">
-              <a class="link" data-link="edit">Edit Subscription</a>
-              <a class="link" href="#">Cancel Subscription</a>
+              <button class="link" data-link="edit">Edit Subscription</button>
+              <button class="link">Cancel Subscription</button>
             </div>
           `;
           modalContent.querySelector('[data-link="edit"]').addEventListener("click", () => renderSubscription("edit"));
@@ -752,52 +745,44 @@
             .map((id) => {
               const addon = addons.find((a) => a.id === id);
               const freq = getAddonFrequency(id);
-              return `<li><span>${addon.label}</span><strong>$${freq.price.toFixed(2)}</strong></li>`;
+              return `<li class="row" style="border-top:none;display:flex;justify-content:space-between;">
+                        <span>${addon.label}</span>
+                        <strong>$${freq.price.toFixed(2)}</strong>
+                      </li>`;
             })
             .join("");
           modalContent.innerHTML = `
             <div class="plan">
               <div class="plan__name">Charges on Dec 19, 2025</div>
             </div>
-            <ul class="card">
-              <li class="row" style="border-top:none;display:flex;justify-content:space-between;">
+            <div class="card">
+              <div class="row" style="border-top:none;display:flex;justify-content:space-between;">
                 <span>${planFreq.name}</span>
                 <strong>$${planFreq.price.toFixed(2)}</strong>
-              </li>
-              ${addonList || "<li class='row' style='border-top:none;'>No addons selected</li>"}
-            </ul>
-            <ul class="card">
-              <li class="row" style="border-top:none;display:flex;justify-content:space-between;">
+              </div>
+              ${addonList || "<div class='row' style='border-top:none;'>No addons selected</div>"}
+            </div>
+            <div class="card">
+              <div class="row" style="border-top:none;display:flex;justify-content:space-between;">
                 <span>Credits applied</span>
                 <strong>-$8.20</strong>
-              </li>
-              <li class="row" style="display:flex;justify-content:space-between;">
+              </div>
+              <div class="row" style="display:flex;justify-content:space-between;">
                 <strong>Total</strong>
                 <strong id="order-total">$${(calculateTotal() - 8.2).toFixed(2)}</strong>
-              </li>
-            </ul>
+              </div>
+            </div>
           `;
           return;
         }
       }
 
-      function calculateTotal() {
-        const planPrice = getPlan().price;
-        const addonsTotal = Array.from(state.addons).reduce((sum, id) => {
-          const freq = getAddonFrequency(id);
-          return sum + (freq?.price || 0);
-        }, 0);
-        return planPrice + addonsTotal;
-      }
-
       function openModal() {
-        backdrop.classList.add("active");
-        backdrop.setAttribute("aria-hidden", "false");
+        modal.classList.add("active");
       }
 
       function closeModal() {
-        backdrop.classList.remove("active");
-        backdrop.setAttribute("aria-hidden", "true");
+        modal.classList.remove("active");
         state.currentScreen = "details";
       }
 
@@ -819,22 +804,13 @@
       });
 
       closeBtn.addEventListener("click", closeModal);
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") closeModal();
+      });
       backBtn.addEventListener("click", () => {
         const backTarget = screenBackMap[state.currentScreen];
         if (backTarget) {
           renderSubscription(backTarget);
-        }
-      });
-
-      backdrop.addEventListener("click", (event) => {
-        if (event.target === backdrop) {
-          closeModal();
-        }
-      });
-
-      document.addEventListener("keydown", (event) => {
-        if (event.key === "Escape" && backdrop.classList.contains("active")) {
-          closeModal();
         }
       });
 

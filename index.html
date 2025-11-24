@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Portal Widgets</title>
+    <style>
+      :root {
+        font-family: "Inter", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+        color: #09263b;
+        background-color: #f6f7fb;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        padding: 40px 16px 80px;
+      }
+
+      .page {
+        width: min(720px, 100%);
+      }
+
+      h1 {
+        margin: 0 0 24px;
+        font-size: clamp(1.75rem, 3vw, 2.5rem);
+      }
+
+      ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      li {
+        background: #fff;
+        border-radius: 10px;
+        padding: 18px 22px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 12px 40px rgba(25, 41, 68, 0.1);
+      }
+
+      button {
+        border: none;
+        background: none;
+        font: inherit;
+        color: #0a65ff;
+        cursor: pointer;
+      }
+
+      .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(4, 11, 20, 0.55);
+        display: none;
+        align-items: flex-start;
+        justify-content: center;
+        padding: 32px 16px;
+        overflow: auto;
+        z-index: 10;
+      }
+
+      .modal-backdrop.active {
+        display: flex;
+      }
+
+      .modal {
+        width: min(560px, 100%);
+        background: #fff;
+        border-radius: 18px;
+        box-shadow: 0 35px 50px rgba(12, 23, 38, 0.35);
+        padding: 32px 32px 40px;
+        position: relative;
+        animation: slideDown 240ms ease;
+      }
+
+      @keyframes slideDown {
+        from {
+          opacity: 0;
+          transform: translateY(-16px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .modal-close {
+        position: absolute;
+        right: 14px;
+        top: 14px;
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        border: none;
+        background: none;
+        color: #0a2436;
+        font-size: 1.35rem;
+        cursor: pointer;
+      }
+
+      .section-title {
+        margin: 0 0 18px;
+        font-size: 1.35rem;
+        text-align: center;
+        color: #0084ff;
+      }
+
+      .card {
+        border-radius: 14px;
+        background: #f8f9ff;
+        padding: 18px 20px;
+        margin-bottom: 14px;
+      }
+
+      .card + .card {
+        margin-top: 12px;
+      }
+
+      .card-heading {
+        font-weight: 600;
+        margin-bottom: 6px;
+      }
+
+      .row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        border-bottom: 1px solid #ebedf5;
+        padding: 14px 0;
+      }
+
+      .row:last-child {
+        border-bottom: none;
+      }
+
+      .primary-pill {
+        padding: 4px 10px;
+        border-radius: 999px;
+        font-size: 0.75rem;
+        background: #d8e9ff;
+        color: #0a65ff;
+        font-weight: 600;
+      }
+
+      .cta-group {
+        display: flex;
+        gap: 18px;
+        margin-top: 20px;
+      }
+
+      .cta-link {
+        color: #0a65ff;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      .download-link {
+        color: #0a65ff;
+        text-decoration: none;
+        font-weight: 600;
+      }
+
+      .info-banner {
+        background: #d0ecff;
+        color: #024872;
+        padding: 12px 16px;
+        border-radius: 10px;
+        margin-bottom: 18px;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+
+      @media (max-width: 640px) {
+        .modal {
+          padding: 24px 20px 32px;
+        }
+
+        li {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 6px;
+        }
+
+        .cta-group {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <h1>Available Widgets</h1>
+      <ul id="widget-list"></ul>
+    </main>
+
+    <template id="modal-template">
+      <div class="modal-backdrop">
+        <article class="modal">
+          <button class="modal-close" aria-label="Close">&times;</button>
+          <div class="modal-body"></div>
+        </article>
+      </div>
+    </template>
+
+    <script>
+      const widgets = [
+        {
+          title: "View / Edit Subscription details",
+          modalTitle: "Subscription Details",
+          render: () => `
+            <h2 class="section-title">Subscription Details</h2>
+            <div class="card">
+              <div class="card-heading">Plan - Keep Moving</div>
+              <div style="font-size:1.75rem; font-weight:700">$300.00</div>
+              <span style="color:#6f7c8f">Billed every month</span>
+            </div>
+            <div class="card">
+              <div class="card-heading">Shipping</div>
+              <p>Chris Foo<br/>Reichenbachstraße Ludwigsvorstadt-Isarvorstadt<br/>München 80469 Bayern Germany</p>
+            </div>
+            <div class="card">
+              <div class="card-heading">Paid via</div>
+              <p>VISA ending 1111</p>
+            </div>
+            <div class="cta-group">
+              <span class="cta-link">Edit Subscription</span>
+              <span class="cta-link">Cancel Subscription</span>
+            </div>
+          `,
+        },
+        {
+          title: "Manage payment methods",
+          modalTitle: "Payment Methods",
+          render: () => `
+            <h2 class="section-title">Payment Methods</h2>
+            <div class="info-banner">
+              <strong>i</strong>
+              <span>Backups come handy when your primary payment fails. Set a backup.</span>
+            </div>
+            <div class="card row">
+              <span>VISA ending 1111</span>
+              <span class="primary-pill">PRIMARY</span>
+            </div>
+            <div class="card row">
+              <span>VISA ending 2222</span>
+              <span>&rsaquo;</span>
+            </div>
+            <div class="cta-group">
+              <button class="cta-link" style="margin:auto;">Add New</button>
+            </div>
+          `,
+        },
+        {
+          title: "Billing History",
+          modalTitle: "Billing history",
+          render: () => {
+            const invoices = [
+              { id: 788, plan: "Plan - Keep Moving", amount: "$300.00", date: "Nov 19, 2025" },
+              { id: 787, plan: "Trial Plan", amount: "$0.00", date: "Nov 19, 2025" },
+              { id: 785, plan: "Trial Plan", amount: "$0.00", date: "Nov 18, 2025" },
+              { id: 784, plan: "Trial Plan", amount: "$0.00", date: "Nov 17, 2025" },
+              { id: 783, plan: "Trial Plan", amount: "$0.00", date: "Nov 16, 2025" },
+            ];
+
+            return `
+              <h2 class="section-title">Billing history</h2>
+              ${invoices
+                .map(
+                  (invoice) => `
+                    <div class="row">
+                      <div>
+                        <strong>Invoice #${invoice.id}</strong><br/>
+                        ${invoice.plan}<br/>
+                        ${invoice.amount} &nbsp; ${invoice.date}
+                      </div>
+                      <a class="download-link" href="#">Download</a>
+                    </div>
+                  `,
+                )
+                .join("")}
+            `;
+          },
+        },
+        {
+          title: "Manage Addresses",
+          modalTitle: "Billing & Shipping Addresses",
+          render: () => `
+            <h2 class="section-title">Billing & Shipping Addresses</h2>
+            <div class="card">
+              <div class="card-heading">Billing</div>
+              <p>Edward Fish<br/>Reichenbachstraße 31 Ludwigsvorstadt-Isarvorstadt<br/>München 80469 Bayern Germany</p>
+            </div>
+            <div class="card">
+              <div class="card-heading">Shipping</div>
+              <p>Chris Foo<br/>Reichenbachstraße Ludwigsvorstadt-Isarvorstadt<br/>München 80469 Bayern Germany</p>
+            </div>
+          `,
+        },
+        {
+          title: "Manage account information",
+          modalTitle: "Account Details",
+          render: () => `
+            <h2 class="section-title">Account Details</h2>
+            <div class="card">
+              <div class="card-heading">Primary contact</div>
+              <p>John Smith<br/>tester123@gmail.com</p>
+            </div>
+          `,
+        },
+      ];
+
+      const list = document.getElementById("widget-list");
+      const template = document.getElementById("modal-template");
+
+      widgets.forEach((widget, index) => {
+        const item = document.createElement("li");
+        const label = document.createElement("span");
+        label.textContent = widget.title;
+
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "widget-button";
+        button.textContent = "Demo";
+        button.addEventListener("click", () => openModal(widget));
+
+        item.appendChild(label);
+        item.appendChild(button);
+        list.appendChild(item);
+      });
+
+      const openModals = new Set();
+
+      function openModal(widget) {
+        const modalNode = template.content.firstElementChild.cloneNode(true);
+        const modal = modalNode.querySelector(".modal");
+        modalNode
+          .querySelector(".modal-body")
+          .insertAdjacentHTML("beforeend", widget.render());
+
+        function close() {
+          openModals.delete(modalNode);
+          modalNode.remove();
+        }
+
+        modalNode.addEventListener("click", (event) => {
+          if (event.target === modalNode) {
+            close();
+          }
+        });
+
+        modalNode.querySelector(".modal-close").addEventListener("click", close);
+        document.body.appendChild(modalNode);
+        modalNode.classList.add("active");
+        openModals.add(modalNode);
+      }
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && openModals.size) {
+          // Close the last opened modal
+          const lastModal = Array.from(openModals).pop();
+          lastModal.remove();
+          openModals.delete(lastModal);
+        }
+      });
+    </script>
+  </body>
+</html>

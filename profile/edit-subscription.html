@@ -15,40 +15,56 @@
         min-height: 100vh;
         display: flex;
         justify-content: center;
-        padding: 72px 16px;
+        padding: 72px 16px 96px;
         background: linear-gradient(180deg, #f5f7fb 0%, #eef1f9 100%);
       }
 
       .page {
-        max-width: 920px;
-        width: 100%;
+        width: min(900px, 100%);
         background: #fff;
-        border-radius: 20px;
-        padding: 40px;
+        border-radius: 24px;
+        padding: 48px;
         box-shadow: 0 35px 80px rgba(4, 20, 46, 0.06);
       }
 
       h1 {
         margin-top: 0;
-        font-size: 32px;
+        font-size: clamp(1.75rem, 3vw, 2.5rem);
         color: #0d243b;
       }
 
       ul.widget-list {
-        list-style: disc;
-        padding-left: 20px;
-        margin-bottom: 32px;
-        color: #0d243b;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
       }
 
       ul.widget-list li {
-        margin-bottom: 8px;
+        background: #f8faff;
+        border-radius: 18px;
+        padding: 18px 22px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 15px 40px rgba(9, 20, 40, 0.08);
       }
 
-      .link {
-        color: #1751ff;
-        text-decoration: none;
+      ul.widget-list li span {
+        font-size: 1rem;
+        color: #0c1e35;
         font-weight: 600;
+      }
+
+      .widget-btn {
+        border: none;
+        background: none;
+        font: inherit;
+        color: #1751ff;
+        font-weight: 600;
+        cursor: pointer;
       }
 
       /* modal */
@@ -409,20 +425,172 @@
         display: flex;
         flex-direction: column;
       }
+      /* generic modal */
+      .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(4, 11, 20, 0.55);
+        display: none;
+        align-items: flex-start;
+        justify-content: center;
+        padding: 32px 16px;
+        overflow: auto;
+        z-index: 10;
+      }
+
+      .modal-backdrop.active {
+        display: flex;
+      }
+
+      .modal {
+        width: min(560px, 100%);
+        background: #fff;
+        border-radius: 24px;
+        box-shadow: 0 35px 50px rgba(12, 23, 38, 0.35);
+        padding: 32px 32px 40px;
+        position: relative;
+        animation: slideDown 240ms ease;
+      }
+
+      @keyframes slideDown {
+        from {
+          opacity: 0;
+          transform: translateY(-16px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .modal-close {
+        position: absolute;
+        right: 14px;
+        top: 14px;
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        border: none;
+        background: none;
+        color: #0a2436;
+        font-size: 1.35rem;
+        cursor: pointer;
+      }
+
+      .generic-section-title {
+        margin: 0 0 18px;
+        font-size: 1.35rem;
+        text-align: center;
+        color: #0084ff;
+      }
+
+      .generic-card {
+        border-radius: 14px;
+        background: #f8f9ff;
+        padding: 18px 20px;
+        margin-bottom: 14px;
+      }
+
+      .generic-card + .generic-card {
+        margin-top: 12px;
+      }
+
+      .generic-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        border-bottom: 1px solid #ebedf5;
+        padding: 14px 0;
+      }
+
+      .generic-row:last-child {
+        border-bottom: none;
+      }
+
+      .primary-pill {
+        padding: 4px 10px;
+        border-radius: 999px;
+        font-size: 0.75rem;
+        background: #d8e9ff;
+        color: #0a65ff;
+        font-weight: 600;
+      }
+
+      .cta-group {
+        display: flex;
+        gap: 18px;
+        margin-top: 20px;
+      }
+
+      .cta-link {
+        color: #0a65ff;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      .download-link {
+        color: #0a65ff;
+        text-decoration: none;
+        font-weight: 600;
+      }
+
+      .info-banner {
+        background: #d0ecff;
+        color: #024872;
+        padding: 12px 16px;
+        border-radius: 10px;
+        margin-bottom: 18px;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+
+      @media (max-width: 640px) {
+        .page {
+          padding: 32px 20px;
+        }
+
+        ul.widget-list li {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 8px;
+        }
+
+        .modal {
+          padding: 24px 20px 32px;
+        }
+
+        .cta-group {
+          flex-direction: column;
+        }
+      }
     </style>
   </head>
   <body>
     <section class="page">
-      <h1># Available Widgets</h1>
+      <h1>Available Widgets</h1>
       <ul class="widget-list">
         <li>
-          View / Edit Subscription details —
-          <a class="link" href="javascript:void(0)" data-demo="subscription">Demo</a>
+          <span>View / Edit Subscription details</span>
+          <button class="widget-btn" data-demo="subscription">Demo</button>
         </li>
-        <li>Manage payment methods — <span class="link">Demo</span></li>
-        <li>Billing History — <span class="link">Demo</span></li>
-        <li>Manage Addresses — <span class="link">Demo</span></li>
-        <li>Manage account information — <span class="link">Demo</span></li>
+        <li>
+          <span>Manage payment methods</span>
+          <button class="widget-btn" data-widget="payments">Demo</button>
+        </li>
+        <li>
+          <span>Billing History</span>
+          <button class="widget-btn" data-widget="billing">Demo</button>
+        </li>
+        <li>
+          <span>Manage Addresses</span>
+          <button class="widget-btn" data-widget="addresses">Demo</button>
+        </li>
+        <li>
+          <span>Manage account information</span>
+          <button class="widget-btn" data-widget="account">Demo</button>
+        </li>
       </ul>
     </section>
 
@@ -569,6 +737,15 @@
       </div>
     </div>
 
+    <template id="generic-modal">
+      <div class="modal-backdrop">
+        <article class="modal">
+          <button class="modal-close" aria-label="Close">&times;</button>
+          <div class="modal-body"></div>
+        </article>
+      </div>
+    </template>
+
     <script>
       const overlay = document.getElementById("overlay");
       const screens = document.querySelectorAll(".screen");
@@ -589,6 +766,9 @@
       const addonEditDesc = document.getElementById("addon-edit-desc");
       const addonEditOptions = document.getElementById("addon-edit-options");
       const addonEditSave = document.getElementById("addon-edit-save");
+      const widgetList = document.querySelector(".widget-list");
+      const modalTemplate = document.getElementById("generic-modal");
+      const openGenericModals = new Set();
 
       const plans = [
         { id: "keep-moving-monthly", label: "Plan – Keep Moving", billing: "Billed every month", price: 300, frequency: "Monthly" },
@@ -627,6 +807,109 @@
           defaultFrequency: "monthly",
         },
       ];
+
+      const genericWidgets = {
+        payments: {
+          title: "Payment Methods",
+          render: () => `
+            <h2 class="generic-section-title">Payment Methods</h2>
+            <div class="info-banner">
+              <strong>i</strong>
+              <span>Backups come handy when your primary payment fails. Set a backup.</span>
+            </div>
+            <div class="generic-card generic-row">
+              <span>VISA ending 1111</span>
+              <span class="primary-pill">PRIMARY</span>
+            </div>
+            <div class="generic-card generic-row">
+              <span>VISA ending 2222</span>
+              <span style="font-size:1.5rem;color:#6f7c96;">›</span>
+            </div>
+            <div class="cta-group" style="justify-content:center;">
+              <button class="cta-link">Add New</button>
+            </div>
+          `,
+        },
+        billing: {
+          title: "Billing history",
+          render: () => {
+            const invoices = [
+              { id: 788, plan: "Plan - Keep Moving", amount: "$300.00", date: "Nov 19, 2025" },
+              { id: 787, plan: "Trial Plan", amount: "$0.00", date: "Nov 19, 2025" },
+              { id: 785, plan: "Trial Plan", amount: "$0.00", date: "Nov 18, 2025" },
+              { id: 784, plan: "Trial Plan", amount: "$0.00", date: "Nov 17, 2025" },
+              { id: 783, plan: "Trial Plan", amount: "$0.00", date: "Nov 16, 2025" },
+            ];
+
+            return `
+              <h2 class="generic-section-title">Billing history</h2>
+              ${invoices
+                .map(
+                  (invoice) => `
+                    <div class="generic-row">
+                      <div>
+                        <strong>Invoice #${invoice.id}</strong><br/>
+                        ${invoice.plan}<br/>
+                        ${invoice.amount} · ${invoice.date}
+                      </div>
+                      <a class="download-link" href="#">Download</a>
+                    </div>
+                  `,
+                )
+                .join("")}
+            `;
+          },
+        },
+        addresses: {
+          title: "Billing & Shipping Addresses",
+          render: () => `
+            <h2 class="generic-section-title">Billing & Shipping Addresses</h2>
+            <div class="generic-card">
+              <div class="card-heading">Billing</div>
+              <p>Edward Fish<br/>Reichenbachstraße 31 Ludwigsvorstadt-Isarvorstadt<br/>München 80469 Bayern Germany</p>
+            </div>
+            <div class="generic-card">
+              <div class="card-heading">Shipping</div>
+              <p>Chris Foo<br/>Reichenbachstraße Ludwigsvorstadt-Isarvorstadt<br/>München 80469 Bayern Germany</p>
+            </div>
+          `,
+        },
+        account: {
+          title: "Account Details",
+          render: () => `
+            <h2 class="generic-section-title">Account Details</h2>
+            <div class="generic-card">
+              <div class="card-heading">Primary contact</div>
+              <p>John Smith<br/>tester123@gmail.com</p>
+            </div>
+          `,
+        },
+      };
+      function openGenericModal(widgetKey) {
+        const widget = genericWidgets[widgetKey];
+        if (!widget) return;
+        const modalNode = modalTemplate.content.firstElementChild.cloneNode(true);
+        const body = modalNode.querySelector(".modal-body");
+        body.innerHTML = widget.render();
+
+        function closeModal() {
+          openGenericModals.delete(modalNode);
+          modalNode.classList.remove("active");
+          modalNode.remove();
+        }
+
+        modalNode.addEventListener("click", (event) => {
+          if (event.target === modalNode) {
+            closeModal();
+          }
+        });
+
+        modalNode.querySelector(".modal-close").addEventListener("click", closeModal);
+        document.body.appendChild(modalNode);
+        requestAnimationFrame(() => modalNode.classList.add("active"));
+        openGenericModals.add(modalNode);
+      }
+
 
       const state = {
         planId: plans[0].id,
@@ -882,6 +1165,15 @@
         }
       });
 
+      widgetList.addEventListener("click", (event) => {
+        const button = event.target.closest(".widget-btn");
+        if (!button) return;
+        const widgetKey = button.dataset.widget;
+        if (widgetKey) {
+          openGenericModal(widgetKey);
+        }
+      });
+
       document.querySelectorAll("[data-screen-target]").forEach((element) => {
         element.addEventListener("click", () => {
           showScreen(element.dataset.screenTarget);
@@ -926,6 +1218,14 @@
 
       state.addons.forEach((addonId) => ensureAddonSetting(addonId));
       renderAll();
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && openGenericModals.size) {
+          const lastModal = Array.from(openGenericModals).pop();
+          lastModal?.remove();
+          openGenericModals.delete(lastModal);
+        }
+      });
     </script>
   </body>
 </html>

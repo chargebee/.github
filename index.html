@@ -328,10 +328,17 @@
 
       widgets.forEach((widget, index) => {
         const item = document.createElement("li");
-        item.innerHTML = `
-          <span>${widget.title}</span>
-          <button data-index="${index}">Demo</button>
-        `;
+        const label = document.createElement("span");
+        label.textContent = widget.title;
+
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "widget-button";
+        button.textContent = "Demo";
+        button.addEventListener("click", () => openModal(widget));
+
+        item.appendChild(label);
+        item.appendChild(button);
         list.appendChild(item);
       });
 
@@ -357,16 +364,9 @@
 
         modalNode.querySelector(".modal-close").addEventListener("click", close);
         document.body.appendChild(modalNode);
-        requestAnimationFrame(() => modalNode.classList.add("active"));
+        modalNode.classList.add("active");
         openModals.add(modalNode);
       }
-
-      list.addEventListener("click", (event) => {
-        if (event.target.matches("button[data-index]")) {
-          const widget = widgets[event.target.dataset.index];
-          openModal(widget);
-        }
-      });
 
       document.addEventListener("keydown", (event) => {
         if (event.key === "Escape" && openModals.size) {

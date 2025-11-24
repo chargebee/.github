@@ -462,6 +462,7 @@
         addons: new Set(),
         pendingAddons: new Set(),
         addonSettings: {},
+        tempAddonFrequency: null,
       };
 
       const screenTitles = {
@@ -598,7 +599,11 @@
       }
 
       function renderSubscription(screen) {
+        const previousScreen = state.currentScreen;
         state.currentScreen = screen;
+        if (screen !== "addonEdit") {
+          state.tempAddonFrequency = null;
+        }
         modalTitle.textContent = screenTitles[screen];
         backBtn.style.display = screenBackMap[screen] ? "inline-flex" : "none";
 
@@ -727,7 +732,7 @@
         }
 
         if (screen === "addons") {
-          if (!state.pendingAddons || state.currentScreen !== "addons") {
+          if (previousScreen !== "addons") {
             state.pendingAddons = new Set(state.addons);
           }
           modalContent.innerHTML = addons
@@ -767,6 +772,8 @@
           modalContent.querySelectorAll("[data-edit-addon]").forEach((btn) => {
             btn.addEventListener("click", () => {
               state.currentAddonEdit = btn.dataset.editAddon;
+              const currentFreq = getAddonFrequency(state.currentAddonEdit);
+              state.tempAddonFrequency = currentFreq?.id || null;
               renderSubscription("addonEdit");
             });
           });
@@ -780,7 +787,7 @@
 
         if (screen === "addonEdit") {
           const addon = addons.find((a) => a.id === state.currentAddonEdit);
-          const selected = getAddonFrequency(addon.id)?.id;
+          const selected = state.tempAddonFrequency || getAddonFrequency(addon.id)?.id;
           modalContent.innerHTML = `
             <div class="plan">
               <div class="plan__name">${addon.label}</div>
@@ -800,11 +807,17 @@
           `;
           modalContent.querySelectorAll("[data-freq]").forEach((option) => {
             option.addEventListener("click", () => {
-              state.addonSettings[addon.id].frequency = option.dataset.freq;
+              state.tempAddonFrequency = option.dataset.freq;
               renderSubscription("addonEdit");
             });
           });
-          modalContent.querySelector("#addon-edit-save").addEventListener("click", () => renderSubscription("addons"));
+          modalContent.querySelector("#addon-edit-save").addEventListener("click", () => {
+            if (state.tempAddonFrequency) {
+              state.addonSettings[addon.id].frequency = state.tempAddonFrequency;
+            }
+            state.tempAddonFrequency = null;
+            renderSubscription("addons");
+          });
           return;
         }
 

@@ -408,6 +408,7 @@
     <script>
       const buttons = document.querySelectorAll("button[data-widget]");
       const modal = document.getElementById("modal");
+      const stage = document.querySelector(".stage");
       const closeBtn = document.getElementById("close-btn");
       const backBtn = document.getElementById("back-btn");
       const modalTitle = document.getElementById("modal-title");
@@ -839,7 +840,16 @@
         });
       });
 
-      closeBtn.addEventListener("click", closeModal);
+      closeBtn.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        closeModal();
+      });
+      stage.addEventListener("click", (event) => {
+        if (event.target === stage && modal.classList.contains("active")) {
+          closeModal();
+        }
+      });
       document.addEventListener("keydown", (event) => {
         if (event.key === "Escape" && modal.classList.contains("active")) closeModal();
       });

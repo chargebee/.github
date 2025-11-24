@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Edit Subscription Demo</title>
+    <style>
+      :root {
+        font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+        color: #0f2b3f;
+        background: #f5f7fb;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        padding: 48px 16px;
+      }
+
+      .page {
+        max-width: 920px;
+        width: 100%;
+        background: #fff;
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 25px 45px rgba(15, 43, 63, 0.08);
+      }
+
+      h1 {
+        margin-top: 0;
+        font-size: 32px;
+      }
+
+      ul {
+        line-height: 1.9;
+        margin-bottom: 40px;
+      }
+
+      a {
+        color: #1161ff;
+        text-decoration: none;
+      }
+
+      .card {
+        background: #f7f9ff;
+        border-radius: 20px;
+        padding: 32px;
+        box-shadow: inset 0 0 0 1px #e0e7ff;
+      }
+
+      .card h2 {
+        margin: 0 0 4px;
+      }
+
+      .subtext {
+        color: #6b7688;
+        font-size: 14px;
+        margin-bottom: 20px;
+      }
+
+      .info-block {
+        background: #fff;
+        border-radius: 16px;
+        padding: 16px 20px;
+        margin: 8px 0;
+        box-shadow: 0 10px 25px rgba(15, 43, 63, 0.08);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .actions {
+        margin-top: 24px;
+        display: flex;
+        gap: 20px;
+      }
+
+      .ghost-button {
+        border: none;
+        background: transparent;
+        color: #1161ff;
+        font-size: 16px;
+        cursor: pointer;
+        padding: 0;
+      }
+
+      /* Modal */
+      .overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(14, 23, 38, 0.55);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+      }
+
+      .overlay.open {
+        display: flex;
+      }
+
+      .modal {
+        background: #f7f9ff;
+        border-radius: 24px;
+        width: min(540px, 100%);
+        padding: 32px;
+        position: relative;
+        box-shadow: 0 35px 60px rgba(9, 25, 45, 0.35);
+        max-height: 96vh;
+        overflow-y: auto;
+      }
+
+      .modal h3 {
+        margin: 0 0 16px;
+      }
+
+      .close {
+        position: absolute;
+        top: 18px;
+        right: 22px;
+        border: none;
+        background: transparent;
+        font-size: 24px;
+        color: #6b7688;
+        cursor: pointer;
+      }
+
+      .select-box,
+      .input-box {
+        width: 100%;
+        border: none;
+        border-radius: 14px;
+        padding: 18px;
+        font-size: 16px;
+        margin-bottom: 16px;
+        box-shadow: inset 0 0 0 1px #d8e1f9;
+        background: #fff;
+      }
+
+      .addon-grid {
+        display: grid;
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+
+      .addon {
+        background: #fff;
+        border-radius: 14px;
+        padding: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        box-shadow: inset 0 0 0 1px #d6def5;
+      }
+
+      .addon label {
+        display: flex;
+        flex-direction: column;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      .addon small {
+        font-weight: 400;
+        color: #6b7688;
+      }
+
+      .pill {
+        background: #e0ecff;
+        color: #1161ff;
+        border-radius: 999px;
+        padding: 4px 12px;
+        font-size: 12px;
+        margin-left: 8px;
+      }
+
+      .summary {
+        background: #fff;
+        border-radius: 16px;
+        padding: 18px;
+        box-shadow: inset 0 0 0 1px #d8e1f9;
+        margin-bottom: 16px;
+      }
+
+      .summary-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 6px;
+      }
+
+      .save-button {
+        width: 100%;
+        padding: 16px;
+        border: none;
+        border-radius: 14px;
+        font-size: 16px;
+        font-weight: 600;
+        color: #fff;
+        background: linear-gradient(135deg, #1161ff, #5f7bff);
+        cursor: pointer;
+      }
+
+      .status {
+        text-align: center;
+        color: #0b7d4b;
+        font-weight: 600;
+        margin-top: 14px;
+        display: none;
+      }
+
+      .status.visible {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <section class="page">
+      <h1># Available Widgets</h1>
+      <ul>
+        <li>View / Edit Subscription details — <a href="javascript:void(0)">Demo</a></li>
+        <li>Manage payment methods — <a href="javascript:void(0)">Demo</a></li>
+        <li>Billing History — <a href="javascript:void(0)">Demo</a></li>
+        <li>Manage Addresses — <a href="javascript:void(0)">Demo</a></li>
+        <li>Manage account information — <a href="javascript:void(0)">Demo</a></li>
+      </ul>
+
+      <div class="card">
+        <h2>Plan – Keep Moving</h2>
+        <p class="subtext">$300 billed every month</p>
+
+        <div class="info-block">
+          <div>
+            <strong>Shipping</strong>
+            <p>Chris Foo<br />Reichenbachstraße 6<br />München 80469</p>
+          </div>
+          <span aria-hidden="true">›</span>
+        </div>
+
+        <div class="info-block">
+          <div>
+            <strong>Paid via</strong>
+            <p>VISA ending 1111</p>
+          </div>
+          <span aria-hidden="true">›</span>
+        </div>
+
+        <div class="actions">
+          <button class="ghost-button" data-action="edit">Edit Subscription</button>
+          <button class="ghost-button">Cancel Subscription</button>
+        </div>
+      </div>
+    </section>
+
+    <div class="overlay" id="modal-overlay" role="dialog" aria-modal="true">
+      <div class="modal">
+        <button class="close" aria-label="Close">×</button>
+        <h3>Edit Subscription Details</h3>
+
+        <select class="select-box" id="plan-select">
+          <option value="keep-moving" data-price="300">Plan – Keep Moving · $300/mo</option>
+          <option value="keep-moving-annual" data-price="3200">Plan – Keep Moving · $3,200/yr</option>
+        </select>
+
+        <div class="addon-grid" id="addon-grid">
+          <!-- Addons injected by JS -->
+        </div>
+
+        <input class="input-box" type="text" placeholder="Enter coupon code" id="coupon" />
+
+        <div class="summary" id="summary">
+          <div class="summary-row">
+            <span>Plan</span>
+            <strong>$300.00</strong>
+          </div>
+          <div class="summary-row" id="addons-line">
+            <span>Addons</span>
+            <strong>$0.00</strong>
+          </div>
+          <hr />
+          <div class="summary-row">
+            <span>Total due next cycle</span>
+            <strong id="due-total">$300.00</strong>
+          </div>
+        </div>
+
+        <button class="save-button" id="save-btn">Save subscription →</button>
+        <p class="status" id="status-message">Subscription saved with your static add-ons ✅</p>
+      </div>
+    </div>
+
+    <script>
+      const modal = document.getElementById("modal-overlay");
+      const openBtn = document.querySelector('[data-action="edit"]');
+      const closeBtn = document.querySelector(".close");
+      const planSelect = document.getElementById("plan-select");
+      const addonGrid = document.getElementById("addon-grid");
+      const addonsLine = document.getElementById("addons-line").querySelector("strong");
+      const dueTotal = document.getElementById("due-total");
+      const saveBtn = document.getElementById("save-btn");
+      const statusMessage = document.getElementById("status-message");
+
+      const addonOptions = [
+        { id: "zumba", label: "Zumba", price: 10, badge: "RECOMMENDED" },
+        { id: "trainer", label: "Personal trainer", price: 25, badge: "ONE-TIME" },
+        { id: "locker", label: "Locker access", price: 5, badge: "MONTHLY" },
+      ];
+
+      const selectedAddons = new Set();
+
+      function currency(amount) {
+        return `$${amount.toFixed(2)}`;
+      }
+
+      function renderAddons() {
+        addonGrid.innerHTML = addonOptions
+          .map(
+            (addon) => `
+          <div class="addon">
+            <label for="${addon.id}">
+              ${addon.label}
+              <small>${currency(addon.price)} / month</small>
+            </label>
+            <div>
+              <span class="pill">${addon.badge}</span>
+              <input type="checkbox" id="${addon.id}" data-price="${addon.price}" />
+            </div>
+          </div>
+        `
+          )
+          .join("");
+
+        addonGrid.querySelectorAll('input[type="checkbox"]').forEach((checkbox) => {
+          checkbox.addEventListener("change", (event) => {
+            const { id } = event.target;
+            if (event.target.checked) {
+              selectedAddons.add(id);
+            } else {
+              selectedAddons.delete(id);
+            }
+            updateSummary();
+          });
+        });
+      }
+
+      function updateSummary() {
+        const planPrice = Number(planSelect.selectedOptions[0].dataset.price);
+        const addonTotal = Array.from(selectedAddons).reduce((sum, addonId) => {
+          const addon = addonOptions.find((item) => item.id === addonId);
+          return addon ? sum + addon.price : sum;
+        }, 0);
+
+        document.querySelector(".summary-row strong").textContent = currency(planPrice);
+        addonsLine.textContent = currency(addonTotal);
+        dueTotal.textContent = currency(planPrice + addonTotal);
+      }
+
+      function openModal() {
+        modal.classList.add("open");
+        statusMessage.classList.remove("visible");
+      }
+
+      function closeModal() {
+        modal.classList.remove("open");
+      }
+
+      openBtn.addEventListener("click", openModal);
+      closeBtn.addEventListener("click", closeModal);
+      modal.addEventListener("click", (event) => {
+        if (event.target === modal) {
+          closeModal();
+        }
+      });
+
+      planSelect.addEventListener("change", updateSummary);
+
+      saveBtn.addEventListener("click", () => {
+        const payload = {
+          plan: planSelect.value,
+          addons: Array.from(selectedAddons),
+          coupon: document.getElementById("coupon").value.trim(),
+          total: dueTotal.textContent,
+        };
+
+        console.table(payload); // quick demo output for devs
+        statusMessage.classList.add("visible");
+      });
+
+      renderAddons();
+      updateSummary();
+    </script>
+  </body>
+</html>

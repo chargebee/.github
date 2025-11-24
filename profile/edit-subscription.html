@@ -179,13 +179,6 @@
         position: relative;
       }
 
-      .line-items .item-actions {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-end;
-        gap: 4px;
-      }
-
       .line-items li::before {
         content: "";
         width: 8px;
@@ -352,15 +345,6 @@
         font-weight: 600;
         text-decoration: none;
         font-size: 14px;
-      }
-
-      .inline-edit {
-        border: none;
-        background: transparent;
-        color: #1751ff;
-        font-weight: 600;
-        cursor: pointer;
-        padding: 0;
       }
 
       .add-addon-btn {
@@ -639,8 +623,12 @@
         });
 
         addonList.querySelectorAll("[data-addon-edit]").forEach((button) => {
-          button.addEventListener("click", () => {
-            console.log(`Editing addon: ${button.dataset.addonEdit}`);
+          button.addEventListener("click", (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            const addonId = button.dataset.addonEdit;
+            const addon = addons.find((item) => item.id === addonId);
+            alert(`Edit settings for ${addon?.label || "this addon"} (static demo).`);
           });
         });
 
@@ -662,7 +650,6 @@
             detail: addon.frequency,
             price: currency(addon.price),
             badge: addon.badge,
-            editId: addon.id,
           })),
         ];
 
@@ -677,10 +664,7 @@
                 ${item.badge ? `<span class="badge">${item.badge}</span>` : ""}
               </div>
             </div>
-            <div class="item-actions">
-              <strong>${item.price}</strong>
-              ${item.editId ? `<button class="inline-edit" data-edit-addon="${item.editId}">Edit →</button>` : ""}
-            </div>
+            <strong>${item.price}</strong>
           </li>
         `
           )
@@ -751,19 +735,6 @@
       addOnBtn.addEventListener("click", () => {
         showScreen("edit");
         renderAll();
-      });
-
-      lineItems.addEventListener("click", (event) => {
-        const editButton = event.target.closest("[data-edit-addon]");
-        if (editButton) {
-          const addonId = editButton.dataset.editAddon;
-          showScreen("addons");
-          requestAnimationFrame(() => {
-            const checkbox = document.getElementById(addonId);
-            checkbox?.scrollIntoView({ block: "center", behavior: "smooth" });
-            checkbox?.focus();
-          });
-        }
       });
 
       planSelect.addEventListener("change", (event) => {

@@ -805,10 +805,11 @@
               .join("")}
             <button class="primary" id="addon-edit-save">Update →</button>
           `;
-          modalContent.querySelectorAll("[data-freq]").forEach((option) => {
+          const freqOptions = modalContent.querySelectorAll("[data-freq]");
+          freqOptions.forEach((option) => {
             option.addEventListener("click", () => {
               state.tempAddonFrequency = option.dataset.freq;
-              renderSubscription("addonEdit");
+              freqOptions.forEach((node) => node.classList.toggle("active", node === option));
             });
           });
           modalContent.querySelector("#addon-edit-save").addEventListener("click", () => {

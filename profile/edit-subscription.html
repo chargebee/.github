@@ -5,9 +5,9 @@
     <title>Edit Subscription Demo</title>
     <style>
       :root {
-        font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+        font-family: "Inter", "SF Pro Display", -apple-system, BlinkMacSystemFont, sans-serif;
         color: #0f2b3f;
-        background: #f5f7fb;
+        background: #f3f5fa;
       }
 
       body {
@@ -15,7 +15,8 @@
         min-height: 100vh;
         display: flex;
         justify-content: center;
-        padding: 64px 16px;
+        padding: 72px 16px;
+        background: linear-gradient(180deg, #f5f7fb 0%, #eef1f9 100%);
       }
 
       .page {
@@ -68,7 +69,7 @@
       .modal {
         background: #f8faff;
         border-radius: 28px;
-        width: min(480px, 100%);
+        width: min(500px, 100%);
         position: relative;
         box-shadow: 0 40px 80px rgba(6, 16, 38, 0.3);
         overflow: hidden;
@@ -173,8 +174,20 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 10px 0;
+        padding: 10px 0 10px 20px;
         border-bottom: 1px solid #edf0fa;
+        position: relative;
+      }
+
+      .line-items li::before {
+        content: "";
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #1f5fff;
+        position: absolute;
+        left: 0;
+        top: 18px;
       }
 
       .line-items li:last-child {
@@ -278,21 +291,71 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 16px;
-        border-radius: 18px;
+        padding: 18px;
+        border-radius: 20px;
         background: #fff;
         border: 1px solid #dfe4f3;
       }
 
-      .addon-item label {
+      .addon-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .addon-copy {
         display: flex;
         flex-direction: column;
         font-weight: 600;
       }
 
-      .addon-item input {
-        width: 20px;
-        height: 20px;
+      .addon-copy small {
+        font-weight: 500;
+        color: #6f7c96;
+      }
+
+      .addon-check {
+        appearance: none;
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        border: 2px solid #cfd9f0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        background: #fff;
+      }
+
+      .addon-check:checked {
+        background: linear-gradient(135deg, #1751ff, #6c7dff);
+        border-color: transparent;
+        box-shadow: 0 6px 12px rgba(23, 81, 255, 0.35);
+      }
+
+      .addon-check:checked::after {
+        content: "✓";
+        color: #fff;
+        font-size: 14px;
+        font-weight: 700;
+      }
+
+      .addon-edit {
+        color: #1751ff;
+        font-weight: 600;
+        text-decoration: none;
+        font-size: 14px;
+      }
+
+      .add-addon-btn {
+        border: 1px solid #dfe4f3;
+        background: #fff;
+        border-radius: 14px;
+        padding: 12px 20px;
+        font-weight: 600;
+        color: #1751ff;
+        cursor: pointer;
+        margin-bottom: 16px;
       }
 
       .order-list {
@@ -379,7 +442,7 @@
 
             <ul class="line-items" id="line-items"></ul>
 
-            <button class="link-button" data-screen-target="addons">Add Addons</button>
+            <button class="add-addon-btn" data-screen-target="addons">Add Addons</button>
 
             <input class="input-box" type="text" id="coupon" placeholder="Enter coupon code" />
 
@@ -535,14 +598,14 @@
           .map(
             (addon) => `
           <div class="addon-item">
-            <label for="${addon.id}">
-              ${addon.label}
-              <small>${currency(addon.price)} ${addon.frequency}</small>
+            <label class="addon-info" for="${addon.id}">
+              <input class="addon-check" type="checkbox" id="${addon.id}" ${state.addons.has(addon.id) ? "checked" : ""} />
+              <div class="addon-copy">
+                ${addon.label} <span class="badge">${addon.badge}</span>
+                <small>${currency(addon.price)} ${addon.frequency}</small>
+              </div>
             </label>
-            <div>
-              <span class="badge">${addon.badge}</span>
-              <input type="checkbox" id="${addon.id}" ${state.addons.has(addon.id) ? "checked" : ""} />
-            </div>
+            <a class="addon-edit" href="javascript:void(0)" data-addon-edit="${addon.id}">Edit →</a>
           </div>
         `
           )
@@ -556,6 +619,12 @@
               state.addons.delete(event.target.id);
             }
             addOnBtn.textContent = `Add (${state.addons.size})`;
+          });
+        });
+
+        addonList.querySelectorAll("[data-addon-edit]").forEach((button) => {
+          button.addEventListener("click", () => {
+            console.log(`Editing addon: ${button.dataset.addonEdit}`);
           });
         });
 

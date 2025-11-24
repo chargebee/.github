@@ -195,6 +195,19 @@
         font-size: 13px;
       }
 
+      .row--charge {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .charge-link {
+        color: var(--blue);
+        font-weight: 600;
+        cursor: pointer;
+      }
+
       .card {
         background: #fff;
         border: 1px solid var(--border);
@@ -642,12 +655,11 @@
               <div class="row">
                 <input class="input" type="text" id="coupon" placeholder="Enter coupon code" value="${state.coupon || ""}" />
               </div>
-              <div class="row">
-                <div class="row__label">Next charge</div>
-                <div class="row__content summary-trigger" data-action="summary">
-                  <span class="summary-arrow">‹</span>
-                  <span>Your next charge $<span id="next-charge">${calculateTotal().toFixed(2)}</span> will be on Dec 19, 2025 via VISA ending 1111</span>
+              <div class="row row--charge">
+                <div class="row__content">
+                  Your next charge $<span id="next-charge">${calculateTotal().toFixed(2)}</span> will be on Dec 19, 2025 via VISA ending 1111
                 </div>
+                <button class="charge-link" data-action="summary">Summary →</button>
               </div>
             </div>
             <button class="primary" id="update-btn">Update Subscription →</button>
@@ -700,7 +712,7 @@
                       <input type="checkbox" data-addon="${addon.id}" ${selected ? "checked" : ""} />
                       <span>${freq?.label || addon.frequencies[0].label}</span>
                     </label>
-                    <button class="link" data-edit-addon="${addon.id}">Edit →</button>
+                    ${selected ? `<button class="link" data-edit-addon="${addon.id}">Edit →</button>` : ""}
                   </div>
                 </div>
               </div>

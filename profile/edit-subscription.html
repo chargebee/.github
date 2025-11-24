@@ -845,14 +845,6 @@
       closeBtn.addEventListener("click", () => {
         closeModal();
       });
-      stage.addEventListener("click", (event) => {
-        if (!modal.contains(event.target) && modal.classList.contains("active")) {
-          closeModal();
-        }
-      });
-      document.addEventListener("keydown", (event) => {
-        if (event.key === "Escape" && modal.classList.contains("active")) closeModal();
-      });
       backBtn.addEventListener("click", () => {
         const backTarget = screenBackMap[state.currentScreen];
         if (backTarget) {

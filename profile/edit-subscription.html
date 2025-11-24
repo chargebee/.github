@@ -459,7 +459,8 @@
       const state = {
         currentScreen: "details",
         planId: plans[0].id,
-        addons: new Set(["trainer"]),
+        addons: new Set(),
+        pendingAddons: new Set(),
         addonSettings: {},
       };
 
@@ -652,9 +653,25 @@
             <div class="card">
               <div class="row">
                 <div class="row__label">Addons</div>
-                <div class="row__content">${Array.from(state.addons)
-                  .map((id) => addons.find((a) => a.id === id)?.label || "")
-                  .join(", ") || "None"}</div>
+                <div class="row__content">
+                  ${
+                    state.addons.size
+                      ? Array.from(state.addons)
+                          .map((id) => {
+                            const addon = addons.find((a) => a.id === id);
+                            const freq = getAddonFrequency(id);
+                            return `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                        <span>${addon.label}</span>
+                        <span>
+                          $${freq?.price.toFixed(2) || "0.00"}
+                          <button class="link" style="font-size:12px;" data-remove-addon="${id}">remove</button>
+                        </span>
+                      </div>`;
+                          })
+                          .join("")
+                      : "None"
+                  }
+                </div>
                 <button class="link" data-action="addons" style="font-size:13px;font-weight:500;">Add addons</button>
               </div>
               <div class="row">
@@ -680,6 +697,12 @@
           modalContent.querySelector("#update-btn").addEventListener("click", () => {
             modalContent.querySelector("#update-status").classList.add("visible");
           });
+          modalContent.querySelectorAll("[data-remove-addon]").forEach((btn) => {
+            btn.addEventListener("click", () => {
+              state.addons.delete(btn.dataset.removeAddon);
+              renderSubscription("edit");
+            });
+          });
           return;
         }
 
@@ -704,9 +727,10 @@
         }
 
         if (screen === "addons") {
+          state.pendingAddons = new Set(state.addons);
           modalContent.innerHTML = addons
             .map((addon) => {
-              const selected = state.addons.has(addon.id);
+              const selected = state.pendingAddons.has(addon.id);
               const freq = getAddonFrequency(addon.id);
               return `
               <div class="card">
@@ -729,10 +753,10 @@
             checkbox.addEventListener("change", (e) => {
               const id = e.target.dataset.addon;
               if (e.target.checked) {
-                state.addons.add(id);
+                state.pendingAddons.add(id);
                 ensureAddonSetting(id);
               } else {
-                state.addons.delete(id);
+                state.pendingAddons.delete(id);
               }
               renderSubscription("addons");
             });
@@ -745,7 +769,10 @@
             });
           });
 
-          modalContent.querySelector("#addons-save").addEventListener("click", () => renderSubscription("edit"));
+          modalContent.querySelector("#addons-save").addEventListener("click", () => {
+            state.addons = new Set(state.pendingAddons);
+            renderSubscription("edit");
+          });
           return;
         }
 

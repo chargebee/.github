@@ -19,17 +19,26 @@
         background: linear-gradient(180deg, #f5f7fb 0%, #eef1f9 100%);
       }
 
-      .page {
-        width: min(900px, 100%);
+      .app {
+        width: min(1200px, 100%);
+        display: flex;
+        gap: 32px;
+      }
+
+      .menu {
+        width: 280px;
         background: #fff;
         border-radius: 24px;
-        padding: 48px;
-        box-shadow: 0 35px 80px rgba(4, 20, 46, 0.06);
+        padding: 40px 28px;
+        box-shadow: 0 35px 80px rgba(4, 20, 46, 0.08);
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
       }
 
       h1 {
-        margin-top: 0;
-        font-size: clamp(1.75rem, 3vw, 2.5rem);
+        margin: 0;
+        font-size: clamp(1.75rem, 3vw, 2.4rem);
         color: #0d243b;
       }
 
@@ -39,21 +48,21 @@
         margin: 0;
         display: flex;
         flex-direction: column;
-        gap: 16px;
+        gap: 12px;
       }
 
       ul.widget-list li {
         background: #f8faff;
-        border-radius: 18px;
-        padding: 18px 22px;
+        border-radius: 16px;
+        padding: 14px 18px;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        box-shadow: 0 15px 40px rgba(9, 20, 40, 0.08);
+        box-shadow: 0 12px 32px rgba(9, 20, 40, 0.08);
       }
 
       ul.widget-list li span {
-        font-size: 1rem;
+        font-size: 0.98rem;
         color: #0c1e35;
         font-weight: 600;
       }
@@ -67,31 +76,34 @@
         cursor: pointer;
       }
 
-      /* modal */
-      .overlay {
-        position: fixed;
-        inset: 0;
-        background: rgba(8, 16, 32, 0.6);
-        display: none;
-        align-items: center;
-        justify-content: center;
-        padding: 12px;
+      .display {
+        flex: 1;
+        position: relative;
+        min-height: 640px;
       }
 
-      .overlay.open {
-        display: flex;
+      .panel {
+        display: none;
+        height: 100%;
+      }
+
+      .panel.active {
+        display: block;
       }
 
       .modal {
         background: #f8faff;
         border-radius: 28px;
-        width: min(500px, 100%);
+        width: min(520px, 100%);
         position: relative;
-        box-shadow: 0 40px 80px rgba(6, 16, 38, 0.3);
+        box-shadow: 0 35px 70px rgba(6, 16, 38, 0.25);
         overflow: hidden;
+        margin-left: auto;
+        height: fit-content;
       }
 
-      .close {
+      .close,
+      .modal-close {
         position: absolute;
         top: 18px;
         right: 22px;
@@ -425,58 +437,6 @@
         display: flex;
         flex-direction: column;
       }
-      /* generic modal */
-      .modal-backdrop {
-        position: fixed;
-        inset: 0;
-        background: rgba(4, 11, 20, 0.55);
-        display: none;
-        align-items: flex-start;
-        justify-content: center;
-        padding: 32px 16px;
-        overflow: auto;
-        z-index: 10;
-      }
-
-      .modal-backdrop.active {
-        display: flex;
-      }
-
-      .modal {
-        width: min(560px, 100%);
-        background: #fff;
-        border-radius: 24px;
-        box-shadow: 0 35px 50px rgba(12, 23, 38, 0.35);
-        padding: 32px 32px 40px;
-        position: relative;
-        animation: slideDown 240ms ease;
-      }
-
-      @keyframes slideDown {
-        from {
-          opacity: 0;
-          transform: translateY(-16px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-
-      .modal-close {
-        position: absolute;
-        right: 14px;
-        top: 14px;
-        width: 34px;
-        height: 34px;
-        border-radius: 50%;
-        border: none;
-        background: none;
-        color: #0a2436;
-        font-size: 1.35rem;
-        cursor: pointer;
-      }
-
       .generic-section-title {
         margin: 0 0 18px;
         font-size: 1.35rem;
@@ -546,211 +506,213 @@
         align-items: center;
       }
 
-      @media (max-width: 640px) {
-        .page {
-          padding: 32px 20px;
+      @media (max-width: 900px) {
+        .app {
+          flex-direction: column;
         }
 
-        ul.widget-list li {
+        .menu {
+          width: 100%;
           flex-direction: column;
-          align-items: flex-start;
-          gap: 8px;
         }
 
         .modal {
-          padding: 24px 20px 32px;
-        }
-
-        .cta-group {
-          flex-direction: column;
+          margin: 0 auto;
         }
       }
     </style>
   </head>
   <body>
-    <section class="page">
-      <h1>Available Widgets</h1>
-      <ul class="widget-list">
-        <li>
-          <span>View / Edit Subscription details</span>
-          <button class="widget-btn" data-demo="subscription">Demo</button>
-        </li>
-        <li>
-          <span>Manage payment methods</span>
-          <button class="widget-btn" data-widget="payments">Demo</button>
-        </li>
-        <li>
-          <span>Billing History</span>
-          <button class="widget-btn" data-widget="billing">Demo</button>
-        </li>
-        <li>
-          <span>Manage Addresses</span>
-          <button class="widget-btn" data-widget="addresses">Demo</button>
-        </li>
-        <li>
-          <span>Manage account information</span>
-          <button class="widget-btn" data-widget="account">Demo</button>
-        </li>
-      </ul>
-    </section>
+    <main class="app">
+      <nav class="menu">
+        <h1>Available Widgets</h1>
+        <ul class="widget-list">
+          <li>
+            <span>View / Edit Subscription details</span>
+            <button class="widget-btn" data-demo="subscription">Demo</button>
+          </li>
+          <li>
+            <span>Manage payment methods</span>
+            <button class="widget-btn" data-widget="payments">Demo</button>
+          </li>
+          <li>
+            <span>Billing History</span>
+            <button class="widget-btn" data-widget="billing">Demo</button>
+          </li>
+          <li>
+            <span>Manage Addresses</span>
+            <button class="widget-btn" data-widget="addresses">Demo</button>
+          </li>
+          <li>
+            <span>Manage account information</span>
+            <button class="widget-btn" data-widget="account">Demo</button>
+          </li>
+        </ul>
+      </nav>
 
-    <div class="overlay" id="overlay" role="dialog" aria-modal="true">
-      <div class="modal">
-        <button class="close" aria-label="Close" data-close>×</button>
+      <section class="display">
+        <div class="panel subscription-panel" id="subscription-panel">
+          <div class="modal">
+            <button class="close" aria-label="Close" data-close-subscription>×</button>
 
-        <div class="screen active" data-screen="details">
-          <header class="modal-header">
-            <h3>Subscription Details</h3>
-          </header>
+            <div class="screen active" data-screen="details">
+              <header class="modal-header">
+                <h3>Subscription Details</h3>
+              </header>
 
-          <div class="card">
-            <div class="plan-chip" data-screen-target="edit">
-              <div>
-                <strong data-ref="planLabel">Plan – Keep Moving</strong>
-                <small data-ref="planBilling">Billed every month</small>
+              <div class="card">
+                <div class="plan-chip" data-screen-target="edit">
+                  <div>
+                    <strong data-ref="planLabel">Plan – Keep Moving</strong>
+                    <small data-ref="planBilling">Billed every month</small>
+                  </div>
+                  <strong data-ref="planPrice">$300.00</strong>
+                </div>
+
+                <div class="info-block">
+                  <strong>Shipping</strong>
+                  <p>
+                    Chris Foo<br />
+                    Reichenbachstraße Ludwigsvorstadt-Isarvorstadt<br />
+                    München 80469 Bayern Germany
+                  </p>
+                </div>
+
+                <div class="info-block">
+                  <strong>Paid via</strong>
+                  <p>VISA ending 1111</p>
+                </div>
               </div>
-              <strong data-ref="planPrice">$300.00</strong>
+
+              <div>
+                <span class="link-button" data-screen-target="edit">Edit Subscription</span>
+                <span class="link-button">Cancel Subscription</span>
+              </div>
             </div>
 
-            <div class="info-block">
-              <strong>Shipping</strong>
+            <div class="screen" data-screen="edit">
+              <header class="modal-header">
+                <button class="back" data-back="details">←</button>
+                <h3>Edit Subscription Details</h3>
+              </header>
+
+              <div class="card">
+                <div class="plan-chip" data-screen-target="plan">
+                  <div>
+                    <strong data-ref="planLabel">Plan – Keep Moving</strong>
+                    <small data-ref="planBilling">Billed every month</small>
+                  </div>
+                  <span class="link-button">Change →</span>
+                </div>
+
+                <ul class="line-items" id="line-items"></ul>
+
+                <button class="add-addon-btn" data-screen-target="addons">Add Addons</button>
+
+                <input class="input-box" type="text" id="coupon" placeholder="Enter coupon code" />
+
+                <div class="summary-card" data-screen-target="summary">
+                  <small>Your next charge</small>
+                  <strong id="next-charge-text">$300.00 on Dec 19, 2025</strong>
+                  <small>via VISA ending 1111</small>
+                </div>
+
+                <button class="primary" id="update-btn">Update Subscription →</button>
+                <p class="status" id="status">Subscription updated successfully.</p>
+              </div>
+            </div>
+
+            <div class="screen" data-screen="plan">
+              <header class="modal-header">
+                <button class="back" data-back="edit">←</button>
+                <h3>Change plan</h3>
+              </header>
+
+              <select class="selector" id="plan-select">
+                <!-- Populated by JS -->
+              </select>
+
+              <div id="frequency-options"></div>
+
+              <button class="primary" data-back="edit">Update →</button>
+            </div>
+
+            <div class="screen" data-screen="addons">
+              <header class="modal-header">
+                <button class="back" data-back="edit">←</button>
+                <h3>Add Addons</h3>
+              </header>
+
+              <div class="addon-list" id="addon-list"></div>
+
+              <button class="primary" id="addon-save">Add (0)</button>
+            </div>
+
+            <div class="screen" data-screen="addon-edit">
+              <header class="modal-header">
+                <button class="back" data-back="addons">←</button>
+                <h3>Edit addon</h3>
+              </header>
+
+              <div class="addon-editor">
+                <div class="addon-edit-header">
+                  <strong id="addon-edit-name">Addon name</strong>
+                  <span class="badge" id="addon-edit-badge">RECOMMENDED</span>
+                  <p id="addon-edit-desc">Flexible add-on description goes here.</p>
+                </div>
+
+                <p class="muted">Select billing frequency</p>
+                <div class="frequency-group" id="addon-edit-options"></div>
+
+                <button class="primary" id="addon-edit-save">Update →</button>
+              </div>
+            </div>
+
+            <div class="screen" data-screen="summary">
+              <header class="modal-header">
+                <button class="back" data-back="edit">←</button>
+                <h3>Your order summary</h3>
+              </header>
+
               <p>
-                Chris Foo<br />
-                Reichenbachstraße Ludwigsvorstadt-Isarvorstadt<br />
-                München 80469 Bayern Germany
+                Charges on <strong>Dec 19, 2025</strong>
               </p>
-            </div>
-
-            <div class="info-block">
-              <strong>Paid via</strong>
-              <p>VISA ending 1111</p>
-            </div>
-          </div>
-
-          <div>
-            <span class="link-button" data-screen-target="edit">Edit Subscription</span>
-            <span class="link-button">Cancel Subscription</span>
-          </div>
-        </div>
-
-        <div class="screen" data-screen="edit">
-          <header class="modal-header">
-            <button class="back" data-back="details">←</button>
-            <h3>Edit Subscription Details</h3>
-          </header>
-
-          <div class="card">
-            <div class="plan-chip" data-screen-target="plan">
-              <div>
-                <strong data-ref="planLabel">Plan – Keep Moving</strong>
-                <small data-ref="planBilling">Billed every month</small>
+              <ul class="order-list" id="order-list"></ul>
+              <div class="line-items">
+                <li>
+                  <span>Credits applied</span>
+                  <strong>-$8.20</strong>
+                </li>
               </div>
-              <span class="link-button">Change →</span>
+              <div class="line-items">
+                <li>
+                  <strong>Total</strong>
+                  <strong id="order-total">$0.00</strong>
+                </li>
+              </div>
             </div>
+          </div>
+        </div>
 
-            <ul class="line-items" id="line-items"></ul>
-
-            <button class="add-addon-btn" data-screen-target="addons">Add Addons</button>
-
-            <input class="input-box" type="text" id="coupon" placeholder="Enter coupon code" />
-
-            <div class="summary-card" data-screen-target="summary">
-              <small>Your next charge</small>
-              <strong id="next-charge-text">$300.00 on Dec 19, 2025</strong>
-              <small>via VISA ending 1111</small>
+        <div class="panel generic-panel active" id="generic-panel">
+          <div class="modal">
+            <button class="modal-close" aria-label="Close" data-generic-close>×</button>
+            <div class="modal-body" id="generic-body">
+              <p class="muted">Select a widget from the left to preview its details.</p>
             </div>
-
-            <button class="primary" id="update-btn">Update Subscription →</button>
-            <p class="status" id="status">Subscription updated successfully.</p>
           </div>
         </div>
-
-        <div class="screen" data-screen="plan">
-          <header class="modal-header">
-            <button class="back" data-back="edit">←</button>
-            <h3>Change plan</h3>
-          </header>
-
-          <select class="selector" id="plan-select">
-            <!-- Populated by JS -->
-          </select>
-
-          <div id="frequency-options"></div>
-
-          <button class="primary" data-back="edit">Update →</button>
-        </div>
-
-        <div class="screen" data-screen="addons">
-          <header class="modal-header">
-            <button class="back" data-back="edit">←</button>
-            <h3>Add Addons</h3>
-          </header>
-
-          <div class="addon-list" id="addon-list"></div>
-
-          <button class="primary" id="addon-save">Add (0)</button>
-        </div>
-
-        <div class="screen" data-screen="addon-edit">
-          <header class="modal-header">
-            <button class="back" data-back="addons">←</button>
-            <h3>Edit addon</h3>
-          </header>
-
-          <div class="addon-editor">
-            <div class="addon-edit-header">
-              <strong id="addon-edit-name">Addon name</strong>
-              <span class="badge" id="addon-edit-badge">RECOMMENDED</span>
-              <p id="addon-edit-desc">Flexible add-on description goes here.</p>
-            </div>
-
-            <p class="muted">Select billing frequency</p>
-            <div class="frequency-group" id="addon-edit-options"></div>
-
-            <button class="primary" id="addon-edit-save">Update →</button>
-          </div>
-        </div>
-
-        <div class="screen" data-screen="summary">
-          <header class="modal-header">
-            <button class="back" data-back="edit">←</button>
-            <h3>Your order summary</h3>
-          </header>
-
-          <p>
-            Charges on <strong>Dec 19, 2025</strong>
-          </p>
-          <ul class="order-list" id="order-list"></ul>
-          <div class="line-items">
-            <li>
-              <span>Credits applied</span>
-              <strong>-$8.20</strong>
-            </li>
-          </div>
-          <div class="line-items">
-            <li>
-              <strong>Total</strong>
-              <strong id="order-total">$0.00</strong>
-            </li>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <template id="generic-modal">
-      <div class="modal-backdrop">
-        <article class="modal">
-          <button class="modal-close" aria-label="Close">&times;</button>
-          <div class="modal-body"></div>
-        </article>
-      </div>
-    </template>
+      </section>
+    </main>
 
     <script>
-      const overlay = document.getElementById("overlay");
       const screens = document.querySelectorAll(".screen");
-      const openDemo = document.querySelector('[data-demo="subscription"]');
-      const closeBtn = document.querySelector("[data-close]");
+      const subscriptionPanel = document.getElementById("subscription-panel");
+      const closeSubscriptionBtn = document.querySelector("[data-close-subscription]");
+      const genericPanel = document.getElementById("generic-panel");
+      const genericBody = document.getElementById("generic-body");
+      const closeGenericBtn = document.querySelector("[data-generic-close]");
+      const widgetList = document.querySelector(".widget-list");
       const lineItems = document.getElementById("line-items");
       const status = document.getElementById("status");
       const addOnBtn = document.getElementById("addon-save");
@@ -766,9 +728,6 @@
       const addonEditDesc = document.getElementById("addon-edit-desc");
       const addonEditOptions = document.getElementById("addon-edit-options");
       const addonEditSave = document.getElementById("addon-edit-save");
-      const widgetList = document.querySelector(".widget-list");
-      const modalTemplate = document.getElementById("generic-modal");
-      const openGenericModals = new Set();
 
       const plans = [
         { id: "keep-moving-monthly", label: "Plan – Keep Moving", billing: "Billed every month", price: 300, frequency: "Monthly" },
@@ -885,32 +844,6 @@
           `,
         },
       };
-      function openGenericModal(widgetKey) {
-        const widget = genericWidgets[widgetKey];
-        if (!widget) return;
-        const modalNode = modalTemplate.content.firstElementChild.cloneNode(true);
-        const body = modalNode.querySelector(".modal-body");
-        body.innerHTML = widget.render();
-
-        function closeModal() {
-          openGenericModals.delete(modalNode);
-          modalNode.classList.remove("active");
-          modalNode.remove();
-        }
-
-        modalNode.addEventListener("click", (event) => {
-          if (event.target === modalNode) {
-            closeModal();
-          }
-        });
-
-        modalNode.querySelector(".modal-close").addEventListener("click", closeModal);
-        document.body.appendChild(modalNode);
-        requestAnimationFrame(() => modalNode.classList.add("active"));
-        openGenericModals.add(modalNode);
-      }
-
-
       const state = {
         planId: plans[0].id,
         addons: new Set(["trainer"]),
@@ -1146,6 +1079,32 @@
         showScreen("addon-edit");
       }
 
+      function showSubscriptionPanel() {
+        subscriptionPanel.classList.add("active");
+        genericPanel.classList.remove("active");
+        showScreen("details");
+        status.classList.remove("visible");
+      }
+
+      function hideSubscriptionPanel() {
+        subscriptionPanel.classList.remove("active");
+        hideGenericPanel();
+      }
+
+      function showGenericPanel(widgetKey) {
+        const widget = genericWidgets[widgetKey];
+        if (!widget) return;
+        genericBody.innerHTML = widget.render();
+        genericPanel.classList.add("active");
+        subscriptionPanel.classList.remove("active");
+      }
+
+      function hideGenericPanel() {
+        genericBody.innerHTML = `<p class="muted">Select a widget from the left to preview its details.</p>`;
+        genericPanel.classList.add("active");
+        subscriptionPanel.classList.remove("active");
+      }
+
       function renderAll() {
         renderPlanOptions();
         renderAddonList();
@@ -1157,20 +1116,19 @@
         }
       }
 
-      openDemo.addEventListener("click", openOverlay);
-      closeBtn.addEventListener("click", closeOverlay);
-      overlay.addEventListener("click", (event) => {
-        if (event.target === overlay) {
-          closeOverlay();
-        }
-      });
+      closeSubscriptionBtn.addEventListener("click", hideSubscriptionPanel);
+      closeGenericBtn.addEventListener("click", hideGenericPanel);
 
       widgetList.addEventListener("click", (event) => {
         const button = event.target.closest(".widget-btn");
         if (!button) return;
+        if (button.dataset.demo === "subscription") {
+          showSubscriptionPanel();
+          return;
+        }
         const widgetKey = button.dataset.widget;
         if (widgetKey) {
-          openGenericModal(widgetKey);
+          showGenericPanel(widgetKey);
         }
       });
 
@@ -1209,6 +1167,7 @@
         if (!state.currentAddonEdit) return;
         renderAll();
         showScreen("addons");
+        renderAddonList();
       });
 
       planSelect.addEventListener("change", (event) => {
@@ -1218,14 +1177,7 @@
 
       state.addons.forEach((addonId) => ensureAddonSetting(addonId));
       renderAll();
-
-      document.addEventListener("keydown", (event) => {
-        if (event.key === "Escape" && openGenericModals.size) {
-          const lastModal = Array.from(openGenericModals).pop();
-          lastModal?.remove();
-          openGenericModals.delete(lastModal);
-        }
-      });
+      hideSubscriptionPanel();
     </script>
   </body>
 </html>

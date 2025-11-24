@@ -98,6 +98,7 @@
         justify-content: flex-end;
         align-items: flex-start;
         padding-right: 12px;
+        position: relative;
       }
 
       .modal {
@@ -109,6 +110,7 @@
         display: none;
         flex-direction: column;
         position: relative;
+        pointer-events: auto;
       }
 
       .modal.active {
@@ -840,13 +842,11 @@
         });
       });
 
-      closeBtn.addEventListener("click", (event) => {
-        event.preventDefault();
-        event.stopPropagation();
+      closeBtn.addEventListener("click", () => {
         closeModal();
       });
-      stage.addEventListener("click", (event) => {
-        if (event.target === stage && modal.classList.contains("active")) {
+      stage.addEventListener("click", () => {
+        if (modal.classList.contains("active")) {
           closeModal();
         }
       });

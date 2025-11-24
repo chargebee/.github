@@ -727,7 +727,9 @@
         }
 
         if (screen === "addons") {
-          state.pendingAddons = new Set(state.addons);
+          if (!state.pendingAddons || state.currentScreen !== "addons") {
+            state.pendingAddons = new Set(state.addons);
+          }
           modalContent.innerHTML = addons
             .map((addon) => {
               const selected = state.pendingAddons.has(addon.id);

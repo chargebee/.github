@@ -437,6 +437,139 @@
         display: flex;
         flex-direction: column;
       }
+
+      /* subscription hero pattern */
+      .cb-hp__wrapper {
+        background: #fff;
+        border-radius: 28px;
+        padding: 16px 0 0;
+      }
+
+      .cb-header {
+        padding: 0 32px 16px;
+      }
+
+      .cb-header__title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #2196f3;
+      }
+
+      .cb-body__wrap {
+        padding: 0 32px 32px;
+      }
+
+      .cb-section {
+        background: #f7f9ff;
+        border-radius: 20px;
+        padding: 24px;
+        margin-bottom: 18px;
+        box-shadow: inset 0 0 0 1px #e6edff;
+      }
+
+      .cb-section__title {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #0e2035;
+        margin-bottom: 12px;
+      }
+
+      .cb-section__title--top {
+        font-size: 1.25rem;
+      }
+
+      .cb-section__left {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .cb-section__title--md {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #0e2035;
+      }
+
+      .cb-section__text {
+        color: #6f7c96;
+        font-size: 0.95rem;
+      }
+
+      .cb-bar {
+        background: #fff;
+        border-radius: 18px;
+        padding: 0;
+        box-shadow: 0 15px 40px rgba(9, 20, 40, 0.08);
+      }
+
+      .cb-bar__wrap {
+        padding: 18px 24px;
+        border-bottom: 1px solid #eef1fb;
+      }
+
+      .cb-bar__wrap:last-child {
+        border-bottom: none;
+      }
+
+      .cb-bar__title {
+        font-weight: 600;
+        margin-bottom: 6px;
+      }
+
+      .cb-content__title {
+        font-weight: 600;
+        margin-bottom: 4px;
+      }
+
+      .cb-content__text {
+        color: #555f74;
+        line-height: 1.5;
+      }
+
+      .cb-content__pill {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: #e3f2fd;
+        color: #2196f3;
+        font-weight: 600;
+        font-size: 0.8rem;
+        margin-right: 10px;
+      }
+
+      .cb-notebar {
+        margin-top: 12px;
+        background: #e8f3ff;
+        border-radius: 14px;
+        padding: 12px 16px;
+        color: #045a92;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        font-size: 0.9rem;
+      }
+
+      .icon-info-circle {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: #d0e9ff;
+        color: #2196f3;
+        font-weight: 700;
+      }
+
+      .cb-section__action {
+        display: inline-flex;
+        color: #1a73e8;
+        font-weight: 600;
+        cursor: pointer;
+        margin-right: 20px;
+      }
       .generic-section-title {
         margin: 0 0 18px;
         font-size: 1.35rem;
@@ -556,37 +689,52 @@
             <button class="close" aria-label="Close" data-close-subscription>×</button>
 
             <div class="screen active" data-screen="details">
-              <header class="modal-header">
-                <h3>Subscription Details</h3>
-              </header>
-
-              <div class="card">
-                <div class="plan-chip" data-screen-target="edit">
-                  <div>
-                    <strong data-ref="planLabel">Plan – Keep Moving</strong>
-                    <small data-ref="planBilling">Billed every month</small>
+              <div class="cb-hp__wrapper">
+                <header class="cb-header">
+                  <div class="cb-header__title">Subscription Details</div>
+                </header>
+                <div class="cb-body__wrap">
+                  <div class="cb-section">
+                    <div class="cb-section__title cb-section__title--top" data-ref="planLabel">Plan – Keep Moving</div>
+                    <div class="cb-section__left">
+                      <span class="cb-section__title--md" data-ref="planPrice">$300.00</span>
+                      <span class="cb-section__text" data-ref="planBilling">Billed every month</span>
+                    </div>
                   </div>
-                  <strong data-ref="planPrice">$300.00</strong>
-                </div>
 
-                <div class="info-block">
-                  <strong>Shipping</strong>
-                  <p>
-                    Chris Foo<br />
-                    Reichenbachstraße Ludwigsvorstadt-Isarvorstadt<br />
-                    München 80469 Bayern Germany
-                  </p>
-                </div>
+                  <div class="cb-section cb-bar">
+                    <div class="cb-bar__wrap">
+                      <div class="cb-bar__title">Shipping</div>
+                      <div class="cb-bar__content">
+                        <div class="cb-content">
+                          <div class="cb-content__title">Chris Foo</div>
+                          <div class="cb-content__text">
+                            <div>Reichenbachstraße Ludwigsvorstadt-Isarvorstadt</div>
+                            <div>München 80469 Bayern Germany</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="cb-bar__wrap">
+                      <div class="cb-bar__title">Paid via</div>
+                      <div class="cb-bar__content">
+                        <div class="cb-content">
+                          <span class="cb-content__pill">VISA</span>
+                          <span class="cb-content__text">ending 1111</span>
+                        </div>
+                        <div class="cb-notebar">
+                          <span class="icon-info-circle">i</span>
+                          <span>Make sure to keep this payment method updated, as your backup payment method will not be used for this subscription.</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
 
-                <div class="info-block">
-                  <strong>Paid via</strong>
-                  <p>VISA ending 1111</p>
+                  <div class="cb-section">
+                    <div class="cb-section__action" data-screen-target="edit">Edit Subscription</div>
+                    <div class="cb-section__action">Cancel Subscription</div>
+                  </div>
                 </div>
-              </div>
-
-              <div>
-                <span class="link-button" data-screen-target="edit">Edit Subscription</span>
-                <span class="link-button">Cancel Subscription</span>
               </div>
             </div>
 

@@ -130,6 +130,7 @@
         font-weight: 700;
         color: #596275;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+        cursor: pointer;
       }
 
       .modal__header {
@@ -268,6 +269,30 @@
         font-weight: 700;
         font-size: 12px;
         flex: 0 0 18px;
+      }
+
+      .summary-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--blue);
+        cursor: pointer;
+        font-weight: 600;
+        margin-top: 8px;
+      }
+
+      .summary-trigger {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        cursor: pointer;
+        color: var(--text-mid);
+      }
+
+      .summary-trigger .summary-arrow {
+        font-size: 16px;
+        color: var(--blue);
+        line-height: 1.3;
       }
 
       .links {
@@ -599,33 +624,30 @@
 
         if (screen === "edit") {
           modalContent.innerHTML = `
-            <div class="plan">
-              <div class="plan__name">Plan - Keep Moving</div>
-              <div class="plan__price">$${plan.price.toFixed(2)} <span class="plan__cycle">${plan.cycle}</span></div>
+            <div class="card" style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;margin-bottom:12px;">
+              <div>
+                <div class="plan__name">Plan - Keep Moving</div>
+                <div class="plan__price">$${plan.price.toFixed(2)} <span class="plan__cycle">${plan.cycle}</span></div>
+              </div>
+              <button class="link" data-action="plan">Change →</button>
             </div>
             <div class="card">
-              <div class="row">
-                <div class="row__label">Current plan</div>
-                <div class="row__content">${plan.name}</div>
-                <button class="link" data-action="plan">Change</button>
-              </div>
               <div class="row">
                 <div class="row__label">Addons</div>
                 <div class="row__content">${Array.from(state.addons)
                   .map((id) => addons.find((a) => a.id === id)?.label || "")
                   .join(", ") || "None"}</div>
-                <button class="link" data-action="addons">Add Addons</button>
+                <button class="link" data-action="addons" style="font-size:13px;font-weight:500;">Add addons</button>
               </div>
               <div class="row">
                 <input class="input" type="text" id="coupon" placeholder="Enter coupon code" value="${state.coupon || ""}" />
               </div>
               <div class="row">
                 <div class="row__label">Next charge</div>
-                <div class="row__content">
-                  $<span id="next-charge">${calculateTotal().toFixed(2)}</span> on Dec 19, 2025<br />
-                  via VISA ending 1111
+                <div class="row__content summary-trigger" data-action="summary">
+                  <span class="summary-arrow">‹</span>
+                  <span>Your next charge $<span id="next-charge">${calculateTotal().toFixed(2)}</span> will be on Dec 19, 2025 via VISA ending 1111</span>
                 </div>
-                <button class="link" data-action="summary">View summary</button>
               </div>
             </div>
             <button class="primary" id="update-btn">Update Subscription →</button>
@@ -784,6 +806,7 @@
       function closeModal() {
         modal.classList.remove("active");
         state.currentScreen = "details";
+        backBtn.style.display = "none";
       }
 
       buttons.forEach((button) => {
@@ -805,7 +828,7 @@
 
       closeBtn.addEventListener("click", closeModal);
       document.addEventListener("keydown", (event) => {
-        if (event.key === "Escape") closeModal();
+        if (event.key === "Escape" && modal.classList.contains("active")) closeModal();
       });
       backBtn.addEventListener("click", () => {
         const backTarget = screenBackMap[state.currentScreen];

@@ -14,9 +14,8 @@
         margin: 0;
         min-height: 100vh;
         display: flex;
-        align-items: flex-start;
         justify-content: center;
-        padding: 48px 16px;
+        padding: 64px 16px;
       }
 
       .page {
@@ -25,76 +24,41 @@
         background: #fff;
         border-radius: 20px;
         padding: 40px;
-        box-shadow: 0 25px 45px rgba(15, 43, 63, 0.08);
+        box-shadow: 0 35px 80px rgba(4, 20, 46, 0.06);
       }
 
       h1 {
         margin-top: 0;
         font-size: 32px;
+        color: #0d243b;
       }
 
-      ul {
-        line-height: 1.9;
-        margin-bottom: 40px;
+      ul.widget-list {
+        list-style: disc;
+        padding-left: 20px;
+        margin-bottom: 32px;
+        color: #0d243b;
       }
 
-      a {
-        color: #1161ff;
+      ul.widget-list li {
+        margin-bottom: 8px;
+      }
+
+      .link {
+        color: #1751ff;
         text-decoration: none;
+        font-weight: 600;
       }
 
-      .card {
-        background: #f7f9ff;
-        border-radius: 20px;
-        padding: 32px;
-        box-shadow: inset 0 0 0 1px #e0e7ff;
-      }
-
-      .card h2 {
-        margin: 0 0 4px;
-      }
-
-      .subtext {
-        color: #6b7688;
-        font-size: 14px;
-        margin-bottom: 20px;
-      }
-
-      .info-block {
-        background: #fff;
-        border-radius: 16px;
-        padding: 16px 20px;
-        margin: 8px 0;
-        box-shadow: 0 10px 25px rgba(15, 43, 63, 0.08);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-
-      .actions {
-        margin-top: 24px;
-        display: flex;
-        gap: 20px;
-      }
-
-      .ghost-button {
-        border: none;
-        background: transparent;
-        color: #1161ff;
-        font-size: 16px;
-        cursor: pointer;
-        padding: 0;
-      }
-
-      /* Modal */
+      /* modal */
       .overlay {
         position: fixed;
         inset: 0;
-        background: rgba(14, 23, 38, 0.55);
+        background: rgba(8, 16, 32, 0.6);
         display: none;
         align-items: center;
         justify-content: center;
-        padding: 16px;
+        padding: 12px;
       }
 
       .overlay.open {
@@ -102,18 +66,12 @@
       }
 
       .modal {
-        background: #f7f9ff;
-        border-radius: 24px;
-        width: min(540px, 100%);
-        padding: 32px;
+        background: #f8faff;
+        border-radius: 28px;
+        width: min(480px, 100%);
         position: relative;
-        box-shadow: 0 35px 60px rgba(9, 25, 45, 0.35);
-        max-height: 96vh;
-        overflow-y: auto;
-      }
-
-      .modal h3 {
-        margin: 0 0 16px;
+        box-shadow: 0 40px 80px rgba(6, 16, 38, 0.3);
+        overflow: hidden;
       }
 
       .close {
@@ -122,273 +80,596 @@
         right: 22px;
         border: none;
         background: transparent;
-        font-size: 24px;
-        color: #6b7688;
+        color: #6b7489;
+        font-size: 26px;
         cursor: pointer;
       }
 
-      .select-box,
-      .input-box {
-        width: 100%;
-        border: none;
-        border-radius: 14px;
-        padding: 18px;
-        font-size: 16px;
-        margin-bottom: 16px;
-        box-shadow: inset 0 0 0 1px #d8e1f9;
-        background: #fff;
+      .screen {
+        display: none;
+        padding: 32px;
+        min-height: 520px;
       }
 
-      .addon-grid {
-        display: grid;
-        gap: 12px;
-        margin-bottom: 16px;
+      .screen.active {
+        display: block;
       }
 
-      .addon {
-        background: #fff;
-        border-radius: 14px;
-        padding: 16px;
+      .modal-header {
         display: flex;
         align-items: center;
-        justify-content: space-between;
-        box-shadow: inset 0 0 0 1px #d6def5;
+        gap: 12px;
+        margin-bottom: 24px;
       }
 
-      .addon label {
-        display: flex;
-        flex-direction: column;
-        font-weight: 600;
+      .modal-header h3 {
+        margin: 0;
+        font-size: 20px;
+      }
+
+      .back {
+        border: none;
+        background: transparent;
+        font-size: 20px;
+        color: #0d243b;
         cursor: pointer;
       }
 
-      .addon small {
-        font-weight: 400;
-        color: #6b7688;
-      }
-
-      .pill {
-        background: #e0ecff;
-        color: #1161ff;
-        border-radius: 999px;
-        padding: 4px 12px;
-        font-size: 12px;
-        margin-left: 8px;
-      }
-
-      .summary {
+      .card {
         background: #fff;
-        border-radius: 16px;
-        padding: 18px;
-        box-shadow: inset 0 0 0 1px #d8e1f9;
-        margin-bottom: 16px;
+        border-radius: 22px;
+        padding: 24px;
+        box-shadow: 0 30px 60px rgba(15, 34, 70, 0.08);
+        margin-bottom: 18px;
       }
 
-      .summary-row {
+      .plan-chip {
         display: flex;
         justify-content: space-between;
+        align-items: center;
+        background: #eef3ff;
+        border-radius: 18px;
+        padding: 16px 20px;
+        margin-bottom: 16px;
+        cursor: pointer;
+      }
+
+      .plan-chip strong {
+        display: block;
+        font-size: 16px;
+      }
+
+      .plan-chip small {
+        color: #6e7a92;
+      }
+
+      .info-block {
+        border-top: 1px solid #edf0fa;
+        padding-top: 16px;
+        margin-top: 16px;
+      }
+
+      .info-block strong {
+        display: block;
         margin-bottom: 6px;
       }
 
-      .save-button {
+      .link-button {
+        display: inline-flex;
+        color: #1751ff;
+        text-decoration: none;
+        font-weight: 600;
+        margin-right: 20px;
+        cursor: pointer;
+      }
+
+      .line-items {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 16px;
+      }
+
+      .line-items li {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px solid #edf0fa;
+      }
+
+      .line-items li:last-child {
+        border-bottom: none;
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 4px 10px;
+        font-size: 11px;
+        border-radius: 999px;
+        margin-left: 8px;
+        background: #e8f1ff;
+        color: #1751ff;
+        font-weight: 600;
+      }
+
+      .input-box {
         width: 100%;
+        border-radius: 16px;
+        border: 1px solid #dfe4f3;
         padding: 16px;
+        font-size: 15px;
+        margin-bottom: 16px;
+        background: #fff;
+      }
+
+      .summary-card {
+        background: #fff;
+        border-radius: 18px;
+        padding: 18px;
+        box-shadow: inset 0 0 0 1px #dfe4f3;
+        margin-bottom: 18px;
+        cursor: pointer;
+      }
+
+      .summary-card strong {
+        display: block;
+        font-size: 18px;
+      }
+
+      .primary {
+        width: 100%;
         border: none;
-        border-radius: 14px;
+        border-radius: 18px;
+        padding: 16px;
+        background: linear-gradient(135deg, #1751ff, #6c7dff);
+        color: #fff;
         font-size: 16px;
         font-weight: 600;
-        color: #fff;
-        background: linear-gradient(135deg, #1161ff, #5f7bff);
         cursor: pointer;
       }
 
       .status {
         text-align: center;
-        color: #0b7d4b;
+        color: #118657;
         font-weight: 600;
-        margin-top: 14px;
+        margin-top: 12px;
         display: none;
       }
 
       .status.visible {
         display: block;
       }
+
+      /* Plan & Addon screens */
+      .selector {
+        width: 100%;
+        border-radius: 18px;
+        padding: 16px;
+        border: 1px solid #dfe4f3;
+        font-size: 15px;
+        margin-bottom: 18px;
+      }
+
+      .frequency-option {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 14px;
+        border-radius: 16px;
+        border: 1px solid #dfe4f3;
+        margin-bottom: 12px;
+        cursor: pointer;
+      }
+
+      .frequency-option.active {
+        border-color: #1751ff;
+        background: #eef3ff;
+      }
+
+      .addon-list {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        margin-bottom: 20px;
+      }
+
+      .addon-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 16px;
+        border-radius: 18px;
+        background: #fff;
+        border: 1px solid #dfe4f3;
+      }
+
+      .addon-item label {
+        display: flex;
+        flex-direction: column;
+        font-weight: 600;
+      }
+
+      .addon-item input {
+        width: 20px;
+        height: 20px;
+      }
+
+      .order-list {
+        list-style: none;
+        padding: 0;
+        margin: 24px 0 0;
+      }
+
+      .order-list li {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 0;
+      }
     </style>
   </head>
   <body>
     <section class="page">
       <h1># Available Widgets</h1>
-      <ul>
-        <li>View / Edit Subscription details — <a href="javascript:void(0)">Demo</a></li>
-        <li>Manage payment methods — <a href="javascript:void(0)">Demo</a></li>
-        <li>Billing History — <a href="javascript:void(0)">Demo</a></li>
-        <li>Manage Addresses — <a href="javascript:void(0)">Demo</a></li>
-        <li>Manage account information — <a href="javascript:void(0)">Demo</a></li>
+      <ul class="widget-list">
+        <li>
+          View / Edit Subscription details —
+          <a class="link" href="javascript:void(0)" data-demo="subscription">Demo</a>
+        </li>
+        <li>Manage payment methods — <span class="link">Demo</span></li>
+        <li>Billing History — <span class="link">Demo</span></li>
+        <li>Manage Addresses — <span class="link">Demo</span></li>
+        <li>Manage account information — <span class="link">Demo</span></li>
       </ul>
-
-      <div class="card">
-        <h2>Plan – Keep Moving</h2>
-        <p class="subtext">$300 billed every month</p>
-
-        <div class="info-block">
-          <div>
-            <strong>Shipping</strong>
-            <p>Chris Foo<br />Reichenbachstraße 6<br />München 80469</p>
-          </div>
-          <span aria-hidden="true">›</span>
-        </div>
-
-        <div class="info-block">
-          <div>
-            <strong>Paid via</strong>
-            <p>VISA ending 1111</p>
-          </div>
-          <span aria-hidden="true">›</span>
-        </div>
-
-        <div class="actions">
-          <button class="ghost-button" data-action="edit">Edit Subscription</button>
-          <button class="ghost-button">Cancel Subscription</button>
-        </div>
-      </div>
     </section>
 
-    <div class="overlay" id="modal-overlay" role="dialog" aria-modal="true">
+    <div class="overlay" id="overlay" role="dialog" aria-modal="true">
       <div class="modal">
-        <button class="close" aria-label="Close">×</button>
-        <h3>Edit Subscription Details</h3>
+        <button class="close" aria-label="Close" data-close>×</button>
 
-        <select class="select-box" id="plan-select">
-          <option value="keep-moving" data-price="300">Plan – Keep Moving · $300/mo</option>
-          <option value="keep-moving-annual" data-price="3200">Plan – Keep Moving · $3,200/yr</option>
-        </select>
+        <div class="screen active" data-screen="details">
+          <header class="modal-header">
+            <h3>Subscription Details</h3>
+          </header>
 
-        <div class="addon-grid" id="addon-grid">
-          <!-- Addons injected by JS -->
+          <div class="card">
+            <div class="plan-chip" data-screen-target="edit">
+              <div>
+                <strong data-ref="planLabel">Plan – Keep Moving</strong>
+                <small data-ref="planBilling">Billed every month</small>
+              </div>
+              <strong data-ref="planPrice">$300.00</strong>
+            </div>
+
+            <div class="info-block">
+              <strong>Shipping</strong>
+              <p>
+                Chris Foo<br />
+                Reichenbachstraße Ludwigsvorstadt-Isarvorstadt<br />
+                München 80469 Bayern Germany
+              </p>
+            </div>
+
+            <div class="info-block">
+              <strong>Paid via</strong>
+              <p>VISA ending 1111</p>
+            </div>
+          </div>
+
+          <div>
+            <span class="link-button" data-screen-target="edit">Edit Subscription</span>
+            <span class="link-button">Cancel Subscription</span>
+          </div>
         </div>
 
-        <input class="input-box" type="text" placeholder="Enter coupon code" id="coupon" />
+        <div class="screen" data-screen="edit">
+          <header class="modal-header">
+            <button class="back" data-back="details">←</button>
+            <h3>Edit Subscription Details</h3>
+          </header>
 
-        <div class="summary" id="summary">
-          <div class="summary-row">
-            <span>Plan</span>
-            <strong>$300.00</strong>
-          </div>
-          <div class="summary-row" id="addons-line">
-            <span>Addons</span>
-            <strong>$0.00</strong>
-          </div>
-          <hr />
-          <div class="summary-row">
-            <span>Total due next cycle</span>
-            <strong id="due-total">$300.00</strong>
+          <div class="card">
+            <div class="plan-chip" data-screen-target="plan">
+              <div>
+                <strong data-ref="planLabel">Plan – Keep Moving</strong>
+                <small data-ref="planBilling">Billed every month</small>
+              </div>
+              <span class="link-button">Change →</span>
+            </div>
+
+            <ul class="line-items" id="line-items"></ul>
+
+            <button class="link-button" data-screen-target="addons">Add Addons</button>
+
+            <input class="input-box" type="text" id="coupon" placeholder="Enter coupon code" />
+
+            <div class="summary-card" data-screen-target="summary">
+              <small>Your next charge</small>
+              <strong id="next-charge-text">$300.00 on Dec 19, 2025</strong>
+              <small>via VISA ending 1111</small>
+            </div>
+
+            <button class="primary" id="update-btn">Update Subscription →</button>
+            <p class="status" id="status">Subscription updated successfully.</p>
           </div>
         </div>
 
-        <button class="save-button" id="save-btn">Save subscription →</button>
-        <p class="status" id="status-message">Subscription saved with your static add-ons ✅</p>
+        <div class="screen" data-screen="plan">
+          <header class="modal-header">
+            <button class="back" data-back="edit">←</button>
+            <h3>Change plan</h3>
+          </header>
+
+          <select class="selector" id="plan-select">
+            <!-- Populated by JS -->
+          </select>
+
+          <div id="frequency-options"></div>
+
+          <button class="primary" data-back="edit">Update →</button>
+        </div>
+
+        <div class="screen" data-screen="addons">
+          <header class="modal-header">
+            <button class="back" data-back="edit">←</button>
+            <h3>Add Addons</h3>
+          </header>
+
+          <div class="addon-list" id="addon-list"></div>
+
+          <button class="primary" id="addon-save">Add (0)</button>
+        </div>
+
+        <div class="screen" data-screen="summary">
+          <header class="modal-header">
+            <button class="back" data-back="edit">←</button>
+            <h3>Your order summary</h3>
+          </header>
+
+          <p>
+            Charges on <strong>Dec 19, 2025</strong>
+          </p>
+          <ul class="order-list" id="order-list"></ul>
+          <div class="line-items">
+            <li>
+              <span>Credits applied</span>
+              <strong>-$8.20</strong>
+            </li>
+          </div>
+          <div class="line-items">
+            <li>
+              <strong>Total</strong>
+              <strong id="order-total">$0.00</strong>
+            </li>
+          </div>
+        </div>
       </div>
     </div>
 
     <script>
-      const modal = document.getElementById("modal-overlay");
-      const openBtn = document.querySelector('[data-action="edit"]');
-      const closeBtn = document.querySelector(".close");
+      const overlay = document.getElementById("overlay");
+      const screens = document.querySelectorAll(".screen");
+      const openDemo = document.querySelector('[data-demo="subscription"]');
+      const closeBtn = document.querySelector("[data-close]");
+      const lineItems = document.getElementById("line-items");
+      const status = document.getElementById("status");
+      const addOnBtn = document.getElementById("addon-save");
+      const addonList = document.getElementById("addon-list");
+      const orderList = document.getElementById("order-list");
+      const orderTotal = document.getElementById("order-total");
+      const nextChargeText = document.getElementById("next-charge-text");
+      const couponInput = document.getElementById("coupon");
       const planSelect = document.getElementById("plan-select");
-      const addonGrid = document.getElementById("addon-grid");
-      const addonsLine = document.getElementById("addons-line").querySelector("strong");
-      const dueTotal = document.getElementById("due-total");
-      const saveBtn = document.getElementById("save-btn");
-      const statusMessage = document.getElementById("status-message");
+      const frequencyContainer = document.getElementById("frequency-options");
 
-      const addonOptions = [
-        { id: "zumba", label: "Zumba", price: 10, badge: "RECOMMENDED" },
-        { id: "trainer", label: "Personal trainer", price: 25, badge: "ONE-TIME" },
-        { id: "locker", label: "Locker access", price: 5, badge: "MONTHLY" },
+      const plans = [
+        { id: "keep-moving-monthly", label: "Plan – Keep Moving", billing: "Billed every month", price: 300, frequency: "Monthly" },
+        { id: "keep-moving-annual", label: "Plan – Keep Moving", billing: "Billed every year", price: 3200, frequency: "Yearly" },
       ];
 
-      const selectedAddons = new Set();
+      const addons = [
+        { id: "zumba", label: "Zumba", price: 10, frequency: "/ month", badge: "RECOMMENDED" },
+        { id: "trainer", label: "Personal trainer", price: 20, frequency: "/ month", badge: "ONE-TIME" },
+        { id: "locker", label: "Locker access", price: 5, frequency: "/ month", badge: "MONTHLY" },
+      ];
 
-      function currency(amount) {
-        return `$${amount.toFixed(2)}`;
+      const state = {
+        planId: plans[0].id,
+        frequency: "Monthly",
+        addons: new Set(["trainer"]), // seed static value to mirror mock
+      };
+
+      function currency(value) {
+        return `$${value.toFixed(2)}`;
       }
 
-      function renderAddons() {
-        addonGrid.innerHTML = addonOptions
+      function getPlan() {
+        return plans.find((plan) => plan.id === state.planId) || plans[0];
+      }
+
+      function showScreen(name) {
+        screens.forEach((screen) => {
+          screen.classList.toggle("active", screen.dataset.screen === name);
+        });
+      }
+
+      function openOverlay() {
+        overlay.classList.add("open");
+        status.classList.remove("visible");
+        showScreen("details");
+      }
+
+      function closeOverlay() {
+        overlay.classList.remove("open");
+      }
+
+      function renderPlanOptions() {
+        planSelect.innerHTML = plans
+          .map((plan) => `<option value="${plan.id}" ${plan.id === state.planId ? "selected" : ""}>${plan.label}</option>`)
+          .join("");
+
+        frequencyContainer.innerHTML = plans
+          .map(
+            (plan) => `
+          <div class="frequency-option ${state.planId === plan.id ? "active" : ""}" data-plan="${plan.id}">
+            <div>
+              <strong>${plan.frequency}</strong>
+              <small>${plan.billing}</small>
+            </div>
+            <strong>${currency(plan.price)}</strong>
+          </div>
+        `
+          )
+          .join("");
+
+        frequencyContainer.querySelectorAll(".frequency-option").forEach((option) => {
+          option.addEventListener("click", () => {
+            state.planId = option.dataset.plan;
+            renderAll();
+          });
+        });
+      }
+
+      function renderAddonList() {
+        addonList.innerHTML = addons
           .map(
             (addon) => `
-          <div class="addon">
+          <div class="addon-item">
             <label for="${addon.id}">
               ${addon.label}
-              <small>${currency(addon.price)} / month</small>
+              <small>${currency(addon.price)} ${addon.frequency}</small>
             </label>
             <div>
-              <span class="pill">${addon.badge}</span>
-              <input type="checkbox" id="${addon.id}" data-price="${addon.price}" />
+              <span class="badge">${addon.badge}</span>
+              <input type="checkbox" id="${addon.id}" ${state.addons.has(addon.id) ? "checked" : ""} />
             </div>
           </div>
         `
           )
           .join("");
 
-        addonGrid.querySelectorAll('input[type="checkbox"]').forEach((checkbox) => {
+        addonList.querySelectorAll("input[type='checkbox']").forEach((checkbox) => {
           checkbox.addEventListener("change", (event) => {
-            const { id } = event.target;
             if (event.target.checked) {
-              selectedAddons.add(id);
+              state.addons.add(event.target.id);
             } else {
-              selectedAddons.delete(id);
+              state.addons.delete(event.target.id);
             }
-            updateSummary();
+            addOnBtn.textContent = `Add (${state.addons.size})`;
           });
         });
+
+        addOnBtn.textContent = `Add (${state.addons.size})`;
       }
 
-      function updateSummary() {
-        const planPrice = Number(planSelect.selectedOptions[0].dataset.price);
-        const addonTotal = Array.from(selectedAddons).reduce((sum, addonId) => {
-          const addon = addonOptions.find((item) => item.id === addonId);
-          return addon ? sum + addon.price : sum;
-        }, 0);
+      function renderLineItems() {
+        const plan = getPlan();
+        const addonItems = Array.from(state.addons).map((id) => addons.find((addon) => addon.id === id));
 
-        document.querySelector(".summary-row strong").textContent = currency(planPrice);
-        addonsLine.textContent = currency(addonTotal);
-        dueTotal.textContent = currency(planPrice + addonTotal);
+        const items = [
+          {
+            label: plan.label,
+            detail: plan.billing,
+            price: currency(plan.price),
+          },
+          ...addonItems.map((addon) => ({
+            label: addon.label,
+            detail: addon.frequency,
+            price: currency(addon.price),
+            badge: addon.badge,
+          })),
+        ];
+
+        lineItems.innerHTML = items
+          .map(
+            (item) => `
+          <li>
+            <div>
+              <strong>${item.label}</strong>
+              <div>
+                <small>${item.detail}</small>
+                ${item.badge ? `<span class="badge">${item.badge}</span>` : ""}
+              </div>
+            </div>
+            <strong>${item.price}</strong>
+          </li>
+        `
+          )
+          .join("");
       }
 
-      function openModal() {
-        modal.classList.add("open");
-        statusMessage.classList.remove("visible");
+      function renderOrderSummary() {
+        const plan = getPlan();
+        const addonItems = Array.from(state.addons).map((id) => addons.find((addon) => addon.id === id));
+        const total = plan.price + addonItems.reduce((sum, addon) => sum + addon.price, 0);
+
+        orderList.innerHTML = [
+          `<li><span>${plan.label}</span><strong>${currency(plan.price)}</strong></li>`,
+          ...addonItems.map((addon) => `<li><span>${addon.label}</span><strong>${currency(addon.price)}</strong></li>`),
+        ].join("");
+
+        const credits = 8.2;
+        orderTotal.textContent = currency(total - credits);
+        nextChargeText.textContent = `${currency(total)} on Dec 19, 2025`;
       }
 
-      function closeModal() {
-        modal.classList.remove("open");
+      function renderPlanSummary() {
+        const plan = getPlan();
+        document.querySelectorAll('[data-ref="planLabel"]').forEach((el) => (el.textContent = plan.label));
+        document.querySelectorAll('[data-ref="planBilling"]').forEach((el) => (el.textContent = plan.billing));
+        document.querySelectorAll('[data-ref="planPrice"]').forEach((el) => (el.textContent = currency(plan.price)));
       }
 
-      openBtn.addEventListener("click", openModal);
-      closeBtn.addEventListener("click", closeModal);
-      modal.addEventListener("click", (event) => {
-        if (event.target === modal) {
-          closeModal();
+      function renderAll() {
+        renderPlanOptions();
+        renderAddonList();
+        renderLineItems();
+        renderOrderSummary();
+        renderPlanSummary();
+      }
+
+      openDemo.addEventListener("click", openOverlay);
+      closeBtn.addEventListener("click", closeOverlay);
+      overlay.addEventListener("click", (event) => {
+        if (event.target === overlay) {
+          closeOverlay();
         }
       });
 
-      planSelect.addEventListener("change", updateSummary);
-
-      saveBtn.addEventListener("click", () => {
-        const payload = {
-          plan: planSelect.value,
-          addons: Array.from(selectedAddons),
-          coupon: document.getElementById("coupon").value.trim(),
-          total: dueTotal.textContent,
-        };
-
-        console.table(payload); // quick demo output for devs
-        statusMessage.classList.add("visible");
+      document.querySelectorAll("[data-screen-target]").forEach((element) => {
+        element.addEventListener("click", () => {
+          showScreen(element.dataset.screenTarget);
+        });
       });
 
-      renderAddons();
-      updateSummary();
+      document.querySelectorAll("[data-back]").forEach((element) => {
+        element.addEventListener("click", () => {
+          showScreen(element.dataset.back);
+        });
+      });
+
+      document.getElementById("update-btn").addEventListener("click", () => {
+        const payload = {
+          plan: state.planId,
+          addons: Array.from(state.addons),
+          coupon: couponInput.value.trim(),
+        };
+        console.table(payload);
+        status.classList.add("visible");
+        status.textContent = "Subscription updated successfully.";
+      });
+
+      addOnBtn.addEventListener("click", () => {
+        showScreen("edit");
+        renderAll();
+      });
+
+      planSelect.addEventListener("change", (event) => {
+        state.planId = event.target.value;
+        renderAll();
+      });
+
+      renderAll();
     </script>
   </body>
 </html>

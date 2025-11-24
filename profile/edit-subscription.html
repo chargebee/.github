@@ -5,9 +5,22 @@
     <title>Edit Subscription Demo</title>
     <style>
       :root {
-        font-family: "Inter", "SF Pro Display", -apple-system, BlinkMacSystemFont, sans-serif;
-        color: #0f2b3f;
-        background: #f3f5fa;
+        font-family: "Inter", ui-sans-serif, -apple-system, BlinkMacSystemFont, sans-serif;
+        color: #212128;
+        background: #0b121f;
+        --overlay: rgba(15, 17, 21, 0.7);
+        --panel: #ffffff;
+        --pale-grey: #f8fafc;
+        --light-blue: #60a5fa;
+        --text-dark: #212128;
+        --text-mid: #334155;
+        --text-light: #64748b;
+        --border: #e6eaf0;
+        --border-2: #edf1f7;
+        --note-bg: #f0f6ff;
+        --shadow: 0 8px 20px rgba(2, 6, 23, 0.18), 0 4px 8px rgba(2, 6, 23, 0.1);
+        --radius: 12px;
+        --modal-w: 420px;
       }
 
       body {
@@ -15,8 +28,10 @@
         min-height: 100vh;
         display: flex;
         justify-content: center;
-        padding: 72px 16px 96px;
-        background: linear-gradient(180deg, #f5f7fb 0%, #eef1f9 100%);
+        padding: 56px 16px 80px;
+        background: linear-gradient(180deg, #0b121f 0%, #182236 100%);
+        color: var(--text-dark);
+        -webkit-font-smoothing: antialiased;
       }
 
       .app {
@@ -26,20 +41,21 @@
       }
 
       .menu {
-        width: 280px;
-        background: #fff;
-        border-radius: 24px;
-        padding: 40px 28px;
-        box-shadow: 0 35px 80px rgba(4, 20, 46, 0.08);
+        width: 260px;
+        background: #101726;
+        border-radius: 20px;
+        padding: 28px 24px;
+        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.45);
         display: flex;
         flex-direction: column;
         gap: 24px;
+        color: #f8fafc;
       }
 
       h1 {
         margin: 0;
         font-size: clamp(1.75rem, 3vw, 2.4rem);
-        color: #0d243b;
+        color: #e0ecff;
       }
 
       ul.widget-list {
@@ -52,26 +68,26 @@
       }
 
       ul.widget-list li {
-        background: #f8faff;
-        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 14px;
         padding: 14px 18px;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        box-shadow: 0 12px 32px rgba(9, 20, 40, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.08);
       }
 
       ul.widget-list li span {
         font-size: 0.98rem;
-        color: #0c1e35;
+        color: #f8fafc;
         font-weight: 600;
       }
 
       .widget-btn {
         border: none;
-        background: none;
+        background: transparent;
         font: inherit;
-        color: #1751ff;
+        color: #60a5fa;
         font-weight: 600;
         cursor: pointer;
       }
@@ -80,43 +96,56 @@
         flex: 1;
         position: relative;
         min-height: 640px;
+        background: var(--overlay);
+        border-radius: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 20px 80px rgba(0, 0, 0, 0.45);
       }
 
       .panel {
         display: none;
-        height: 100%;
+        width: 100%;
+        justify-content: center;
       }
 
       .panel.active {
-        display: block;
+        display: flex;
       }
 
       .modal {
-        background: #f8faff;
-        border-radius: 28px;
-        width: min(640px, 100%);
+        width: var(--modal-w);
+        background: var(--panel);
+        border-radius: 6px;
+        box-shadow: var(--shadow);
         position: relative;
-        box-shadow: 0 35px 70px rgba(6, 16, 38, 0.25);
+        display: flex;
+        flex-direction: column;
         overflow: hidden;
-        margin-left: auto;
-        height: fit-content;
       }
 
       .close,
       .modal-close {
         position: absolute;
-        top: 18px;
-        right: 22px;
-        border: none;
-        background: transparent;
-        color: #6b7489;
-        font-size: 26px;
+        top: -14px;
+        right: -14px;
+        width: 32px;
+        height: 32px;
+        border-radius: 999px;
+        background: #f1f3f6;
+        border: 1px solid #d7dbe1;
+        display: grid;
+        place-items: center;
+        font-size: 16px;
+        font-weight: 700;
+        color: #596275;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
         cursor: pointer;
       }
 
       .screen {
         display: none;
-        padding: 32px;
         min-height: 520px;
       }
 
@@ -124,101 +153,230 @@
         display: block;
       }
 
-      .modal-header {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        margin-bottom: 24px;
+      .modal__header {
+        padding: 18px 20px;
+        text-align: center;
+        border-bottom: 1px solid var(--border);
+        position: relative;
       }
 
-      .modal-header h3 {
+      .modal__title {
         margin: 0;
-        font-size: 20px;
+        font-weight: 700;
+        font-size: 18px;
+        color: var(--light-blue);
       }
 
-      .back {
+      .modal__back {
+        position: absolute;
+        left: 16px;
+        top: 50%;
+        transform: translateY(-50%);
         border: none;
         background: transparent;
+        color: var(--text-mid);
         font-size: 20px;
-        color: #0d243b;
+        cursor: pointer;
+      }
+
+      .modal__body {
+        background: var(--pale-grey);
+        min-height: 460px;
+        display: flex;
+        justify-content: center;
+        padding: 16px 0 20px;
+      }
+
+      .content {
+        width: calc(var(--modal-w) - 40px);
+        background: var(--pale-grey);
+        padding: 0 18px 12px;
+        box-sizing: border-box;
+      }
+
+      .plan-chip,
+      .selector,
+      .addon-list,
+      .summary-card,
+      .input-box,
+      .frequency-option,
+      .addon-item {
+        border-radius: 6px;
+        border: 1px solid var(--border);
+        background: #fff;
+      }
+
+      .link-button {
+        background: transparent;
+        border: none;
+        color: var(--light-blue);
+        font-weight: 600;
         cursor: pointer;
       }
 
       .card {
         background: #fff;
-        border-radius: 22px;
-        padding: 24px;
-        box-shadow: 0 30px 60px rgba(15, 34, 70, 0.08);
-        margin-bottom: 18px;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 16px;
+        margin-bottom: 14px;
       }
 
       .plan-chip {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        background: #eef3ff;
-        border-radius: 18px;
-        padding: 16px 20px;
-        margin-bottom: 16px;
-        cursor: pointer;
-      }
-
-      .plan-chip strong {
-        display: block;
-        font-size: 16px;
-      }
-
-      .plan-chip small {
-        color: #6e7a92;
-      }
-
-      .info-block {
-        border-top: 1px solid #edf0fa;
-        padding-top: 16px;
-        margin-top: 16px;
-      }
-
-      .info-block strong {
-        display: block;
-        margin-bottom: 6px;
-      }
-
-      .link-button {
-        display: inline-flex;
-        color: #1751ff;
-        text-decoration: none;
-        font-weight: 600;
-        margin-right: 20px;
+        padding: 12px;
         cursor: pointer;
       }
 
       .line-items {
         list-style: none;
         padding: 0;
-        margin: 0 0 16px;
+        margin: 12px 0;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        background: #fff;
       }
 
       .line-items li {
         display: flex;
         justify-content: space-between;
-        align-items: center;
-        padding: 10px 0 10px 20px;
-        border-bottom: 1px solid #edf0fa;
-        position: relative;
-      }
-
-      .line-items li::before {
-        content: "";
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background: #1f5fff;
-        position: absolute;
-        left: 0;
-        top: 18px;
+        padding: 12px 14px;
+        border-bottom: 1px solid var(--border-2);
+        font-size: 14px;
       }
 
       .line-items li:last-child {
+        border-bottom: none;
+      }
+
+      .add-addon-btn {
+        width: 100%;
+        border: 1px dashed var(--border);
+        background: #fff;
+        padding: 12px;
+        border-radius: 6px;
+        font-weight: 600;
+        color: var(--text-mid);
+        cursor: pointer;
+        margin-bottom: 12px;
+      }
+
+      .input-box {
+        width: 100%;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 12px;
+        font-size: 14px;
+        margin: 12px 0;
+        background: #fff;
+      }
+
+      .summary-card {
+        padding: 12px 14px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        margin-bottom: 12px;
+      }
+
+      .primary {
+        width: 100%;
+        padding: 12px;
+        border: none;
+        border-radius: 6px;
+        background: var(--light-blue);
+        color: #fff;
+        font-weight: 600;
+        cursor: pointer;
+        margin-top: 8px;
+      }
+
+      .status {
+        text-align: center;
+        color: #16a34a;
+        font-weight: 600;
+        margin-top: 8px;
+        display: none;
+      }
+
+      .status.visible {
+        display: block;
+      }
+
+      .selector {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 12px;
+      }
+
+      .frequency-option {
+        padding: 12px 14px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+        cursor: pointer;
+      }
+
+      .frequency-option.active {
+        border-color: var(--light-blue);
+        box-shadow: 0 0 0 1px rgba(96, 165, 250, 0.2);
+      }
+
+      .addon-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .addon-item {
+        padding: 12px 14px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .addon-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .addon-copy {
+        display: flex;
+        flex-direction: column;
+        font-weight: 600;
+      }
+
+      .addon-copy small {
+        font-weight: 400;
+        color: var(--text-light);
+      }
+
+      .addon-check {
+        width: 18px;
+        height: 18px;
+      }
+
+      .order-list {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 12px;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        background: #fff;
+      }
+
+      .order-list li {
+        display: flex;
+        justify-content: space-between;
+        padding: 12px 14px;
+        border-bottom: 1px solid var(--border-2);
+      }
+
+      .order-list li:last-child {
         border-bottom: none;
       }
 
@@ -570,6 +728,19 @@
         cursor: pointer;
         margin-right: 20px;
       }
+
+      .links {
+        margin: 18px 0 0;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .link {
+        color: var(--light-blue);
+        font-weight: 600;
+        text-decoration: none;
+      }
       .generic-section-title {
         margin: 0 0 18px;
         font-size: 1.35rem;
@@ -739,104 +910,108 @@
             </div>
 
             <div class="screen" data-screen="edit">
-              <header class="modal-header">
-                <button class="back" data-back="details">←</button>
-                <h3>Edit Subscription Details</h3>
-              </header>
+              <div class="modal__header">
+                <button class="modal__back" data-back="details">‹</button>
+                <h3 class="modal__title">Edit Subscription Details</h3>
+              </div>
+              <div class="modal__body">
+                <div class="content">
+                  <div class="card">
+                    <div class="plan-chip" data-screen-target="plan">
+                      <div>
+                        <strong data-ref="planLabel">Plan – Keep Moving</strong>
+                        <small data-ref="planBilling">Billed every month</small>
+                      </div>
+                      <span class="link-button">Change →</span>
+                    </div>
 
-              <div class="card">
-                <div class="plan-chip" data-screen-target="plan">
-                  <div>
-                    <strong data-ref="planLabel">Plan – Keep Moving</strong>
-                    <small data-ref="planBilling">Billed every month</small>
+                    <ul class="line-items" id="line-items"></ul>
+
+                    <button class="add-addon-btn" data-screen-target="addons">Add Addons</button>
+
+                    <input class="input-box" type="text" id="coupon" placeholder="Enter coupon code" />
+
+                    <div class="summary-card" data-screen-target="summary">
+                      <small>Your next charge</small>
+                      <strong id="next-charge-text">$300.00 on Dec 19, 2025</strong>
+                      <small>via VISA ending 1111</small>
+                    </div>
+
+                    <button class="primary" id="update-btn">Update Subscription →</button>
+                    <p class="status" id="status">Subscription updated successfully.</p>
                   </div>
-                  <span class="link-button">Change →</span>
                 </div>
-
-                <ul class="line-items" id="line-items"></ul>
-
-                <button class="add-addon-btn" data-screen-target="addons">Add Addons</button>
-
-                <input class="input-box" type="text" id="coupon" placeholder="Enter coupon code" />
-
-                <div class="summary-card" data-screen-target="summary">
-                  <small>Your next charge</small>
-                  <strong id="next-charge-text">$300.00 on Dec 19, 2025</strong>
-                  <small>via VISA ending 1111</small>
-                </div>
-
-                <button class="primary" id="update-btn">Update Subscription →</button>
-                <p class="status" id="status">Subscription updated successfully.</p>
               </div>
             </div>
 
             <div class="screen" data-screen="plan">
-              <header class="modal-header">
-                <button class="back" data-back="edit">←</button>
-                <h3>Change plan</h3>
-              </header>
-
-              <select class="selector" id="plan-select">
-                <!-- Populated by JS -->
-              </select>
-
-              <div id="frequency-options"></div>
-
-              <button class="primary" data-back="edit">Update →</button>
+              <div class="modal__header">
+                <button class="modal__back" data-back="edit">‹</button>
+                <h3 class="modal__title">Change plan</h3>
+              </div>
+              <div class="modal__body">
+                <div class="content">
+                  <select class="selector" id="plan-select"></select>
+                  <div id="frequency-options"></div>
+                  <button class="primary" data-back="edit">Update →</button>
+                </div>
+              </div>
             </div>
 
             <div class="screen" data-screen="addons">
-              <header class="modal-header">
-                <button class="back" data-back="edit">←</button>
-                <h3>Add Addons</h3>
-              </header>
-
-              <div class="addon-list" id="addon-list"></div>
-
-              <button class="primary" id="addon-save">Add (0)</button>
+              <div class="modal__header">
+                <button class="modal__back" data-back="edit">‹</button>
+                <h3 class="modal__title">Add Addons</h3>
+              </div>
+              <div class="modal__body">
+                <div class="content">
+                  <div class="addon-list" id="addon-list"></div>
+                  <button class="primary" id="addon-save">Add (0)</button>
+                </div>
+              </div>
             </div>
 
             <div class="screen" data-screen="addon-edit">
-              <header class="modal-header">
-                <button class="back" data-back="addons">←</button>
-                <h3>Edit addon</h3>
-              </header>
-
-              <div class="addon-editor">
-                <div class="addon-edit-header">
-                  <strong id="addon-edit-name">Addon name</strong>
-                  <span class="badge" id="addon-edit-badge">RECOMMENDED</span>
-                  <p id="addon-edit-desc">Flexible add-on description goes here.</p>
+              <div class="modal__header">
+                <button class="modal__back" data-back="addons">‹</button>
+                <h3 class="modal__title">Edit addon</h3>
+              </div>
+              <div class="modal__body">
+                <div class="content">
+                  <div class="addon-editor card">
+                    <div class="addon-edit-header">
+                      <strong id="addon-edit-name">Addon name</strong>
+                      <span class="badge" id="addon-edit-badge">RECOMMENDED</span>
+                      <p id="addon-edit-desc">Flexible add-on description goes here.</p>
+                    </div>
+                    <p class="muted">Select billing frequency</p>
+                    <div class="frequency-group" id="addon-edit-options"></div>
+                    <button class="primary" id="addon-edit-save">Update →</button>
+                  </div>
                 </div>
-
-                <p class="muted">Select billing frequency</p>
-                <div class="frequency-group" id="addon-edit-options"></div>
-
-                <button class="primary" id="addon-edit-save">Update →</button>
               </div>
             </div>
 
             <div class="screen" data-screen="summary">
-              <header class="modal-header">
-                <button class="back" data-back="edit">←</button>
-                <h3>Your order summary</h3>
-              </header>
-
-              <p>
-                Charges on <strong>Dec 19, 2025</strong>
-              </p>
-              <ul class="order-list" id="order-list"></ul>
-              <div class="line-items">
-                <li>
-                  <span>Credits applied</span>
-                  <strong>-$8.20</strong>
-                </li>
+              <div class="modal__header">
+                <button class="modal__back" data-back="edit">‹</button>
+                <h3 class="modal__title">Your order summary</h3>
               </div>
-              <div class="line-items">
-                <li>
-                  <strong>Total</strong>
-                  <strong id="order-total">$0.00</strong>
-                </li>
+              <div class="modal__body">
+                <div class="content">
+                  <p class="muted">Charges on <strong>Dec 19, 2025</strong></p>
+                  <ul class="order-list" id="order-list"></ul>
+                  <ul class="line-items">
+                    <li>
+                      <span>Credits applied</span>
+                      <strong>-$8.20</strong>
+                    </li>
+                    <li>
+                      <strong>Total</strong>
+                      <strong id="order-total">$0.00</strong>
+                    </li>
+                  </ul>
+                </div>
               </div>
             </div>
           </div>
@@ -845,8 +1020,13 @@
         <div class="panel generic-panel active" id="generic-panel">
           <div class="modal">
             <button class="modal-close" aria-label="Close" data-generic-close>×</button>
-            <div class="modal-body" id="generic-body">
-              <p class="muted">Select a widget from the left to preview its details.</p>
+            <div class="modal__header">
+              <h3 class="modal__title" id="generic-title">Widget Preview</h3>
+            </div>
+            <div class="modal__body">
+              <div class="content" id="generic-body">
+                <p class="muted">Select a widget from the left to preview its details.</p>
+              </div>
             </div>
           </div>
         </div>
@@ -859,6 +1039,7 @@
       const closeSubscriptionBtn = document.querySelector("[data-close-subscription]");
       const genericPanel = document.getElementById("generic-panel");
       const genericBody = document.getElementById("generic-body");
+      const genericTitle = document.getElementById("generic-title");
       const closeGenericBtn = document.querySelector("[data-generic-close]");
       const widgetList = document.querySelector(".widget-list");
       const lineItems = document.getElementById("line-items");
@@ -1242,12 +1423,14 @@
       function showGenericPanel(widgetKey) {
         const widget = genericWidgets[widgetKey];
         if (!widget) return;
+        genericTitle.textContent = widget.title;
         genericBody.innerHTML = widget.render();
         genericPanel.classList.add("active");
         subscriptionPanel.classList.remove("active");
       }
 
       function hideGenericPanel() {
+        genericTitle.textContent = "Widget Preview";
         genericBody.innerHTML = `<p class="muted">Select a widget from the left to preview its details.</p>`;
         genericPanel.classList.add("active");
         subscriptionPanel.classList.remove("active");

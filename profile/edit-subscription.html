@@ -832,6 +832,12 @@
         }
       });
 
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && backdrop.classList.contains("active")) {
+          closeModal();
+        }
+      });
+
       ensureAddonSetting("trainer");
     </script>
   </body>

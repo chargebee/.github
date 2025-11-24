@@ -845,8 +845,8 @@
       closeBtn.addEventListener("click", () => {
         closeModal();
       });
-      stage.addEventListener("click", () => {
-        if (modal.classList.contains("active")) {
+      stage.addEventListener("click", (event) => {
+        if (!modal.contains(event.target) && modal.classList.contains("active")) {
           closeModal();
         }
       });

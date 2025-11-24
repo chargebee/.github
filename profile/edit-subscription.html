@@ -268,6 +268,7 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
+        gap: 14px;
         padding: 14px;
         border-radius: 16px;
         border: 1px solid #dfe4f3;
@@ -278,6 +279,12 @@
       .frequency-option.active {
         border-color: #1751ff;
         background: #eef3ff;
+      }
+
+      .frequency-option input {
+        accent-color: #1751ff;
+        width: 18px;
+        height: 18px;
       }
 
       .addon-list {
@@ -368,6 +375,39 @@
         display: flex;
         justify-content: space-between;
         padding: 10px 0;
+      }
+
+      .addon-editor {
+        background: #fff;
+        border-radius: 24px;
+        padding: 24px;
+        box-shadow: 0 25px 60px rgba(15, 34, 70, 0.1);
+      }
+
+      .addon-edit-header {
+        margin-bottom: 16px;
+      }
+
+      .addon-edit-header strong {
+        display: block;
+        font-size: 18px;
+        margin-bottom: 4px;
+      }
+
+      .addon-edit-header p {
+        margin: 8px 0 0;
+        color: #6f7c96;
+        line-height: 1.5;
+      }
+
+      .muted {
+        color: #6f7c96;
+        margin-bottom: 12px;
+      }
+
+      .frequency-group {
+        display: flex;
+        flex-direction: column;
       }
     </style>
   </head>
@@ -483,6 +523,26 @@
           <button class="primary" id="addon-save">Add (0)</button>
         </div>
 
+        <div class="screen" data-screen="addon-edit">
+          <header class="modal-header">
+            <button class="back" data-back="addons">←</button>
+            <h3>Edit addon</h3>
+          </header>
+
+          <div class="addon-editor">
+            <div class="addon-edit-header">
+              <strong id="addon-edit-name">Addon name</strong>
+              <span class="badge" id="addon-edit-badge">RECOMMENDED</span>
+              <p id="addon-edit-desc">Flexible add-on description goes here.</p>
+            </div>
+
+            <p class="muted">Select billing frequency</p>
+            <div class="frequency-group" id="addon-edit-options"></div>
+
+            <button class="primary" id="addon-edit-save">Update →</button>
+          </div>
+        </div>
+
         <div class="screen" data-screen="summary">
           <header class="modal-header">
             <button class="back" data-back="edit">←</button>
@@ -524,6 +584,11 @@
       const couponInput = document.getElementById("coupon");
       const planSelect = document.getElementById("plan-select");
       const frequencyContainer = document.getElementById("frequency-options");
+      const addonEditName = document.getElementById("addon-edit-name");
+      const addonEditBadge = document.getElementById("addon-edit-badge");
+      const addonEditDesc = document.getElementById("addon-edit-desc");
+      const addonEditOptions = document.getElementById("addon-edit-options");
+      const addonEditSave = document.getElementById("addon-edit-save");
 
       const plans = [
         { id: "keep-moving-monthly", label: "Plan – Keep Moving", billing: "Billed every month", price: 300, frequency: "Monthly" },
@@ -531,15 +596,43 @@
       ];
 
       const addons = [
-        { id: "zumba", label: "Zumba", price: 10, frequency: "/ month", badge: "RECOMMENDED" },
-        { id: "trainer", label: "Personal trainer", price: 20, frequency: "/ month", badge: "ONE-TIME" },
-        { id: "locker", label: "Locker access", price: 5, frequency: "/ month", badge: "MONTHLY" },
+        {
+          id: "zumba",
+          label: "Zumba",
+          badge: "RECOMMENDED",
+          description: "Level-up your cardio with unlimited Zumba sessions.",
+          frequencies: [
+            { id: "monthly", label: "Monthly", explainer: "Renews every month", detail: "$10.00 / month", price: 10, summaryDetail: "/ month" },
+            { id: "one-time", label: "One-time drop-in", explainer: "Pay once for a class pack", detail: "$18.00 one-time", price: 18, summaryDetail: "one-time" },
+          ],
+          defaultFrequency: "monthly",
+        },
+        {
+          id: "trainer",
+          label: "Personal trainer",
+          badge: "ONE-TIME",
+          description: "Work 1:1 with a trainer for form checks and motivation.",
+          frequencies: [
+            { id: "one-time", label: "One-time session", explainer: "Single 60-minute session", detail: "$20.00 one-time", price: 20, summaryDetail: "one-time" },
+            { id: "monthly", label: "Monthly plan", explainer: "Four sessions every month", detail: "$70.00 / month", price: 70, summaryDetail: "/ month" },
+          ],
+          defaultFrequency: "one-time",
+        },
+        {
+          id: "locker",
+          label: "Locker access",
+          badge: "MONTHLY",
+          description: "Keep your gear secure with 24/7 locker access.",
+          frequencies: [{ id: "monthly", label: "Monthly", explainer: "Renews every month", detail: "$5.00 / month", price: 5, summaryDetail: "/ month" }],
+          defaultFrequency: "monthly",
+        },
       ];
 
       const state = {
         planId: plans[0].id,
-        frequency: "Monthly",
-        addons: new Set(["trainer"]), // seed static value to mirror mock
+        addons: new Set(["trainer"]),
+        addonSettings: {},
+        currentAddonEdit: null,
       };
 
       function currency(value) {
@@ -548,6 +641,27 @@
 
       function getPlan() {
         return plans.find((plan) => plan.id === state.planId) || plans[0];
+      }
+
+      function getAddon(addonId) {
+        return addons.find((addon) => addon.id === addonId);
+      }
+
+      function ensureAddonSetting(addonId) {
+        const addon = getAddon(addonId);
+        if (!addon) return;
+        const defaultFrequency = addon.defaultFrequency || addon.frequencies[0].id;
+        if (!state.addonSettings[addonId]) {
+          state.addonSettings[addonId] = { frequency: defaultFrequency };
+        }
+      }
+
+      function getAddonFrequencyData(addonId) {
+        ensureAddonSetting(addonId);
+        const addon = getAddon(addonId);
+        if (!addon) return null;
+        const selectedId = state.addonSettings[addonId]?.frequency || addon.defaultFrequency || addon.frequencies[0].id;
+        return addon.frequencies.find((freq) => freq.id === selectedId) || addon.frequencies[0];
       }
 
       function showScreen(name) {
@@ -595,30 +709,34 @@
 
       function renderAddonList() {
         addonList.innerHTML = addons
-          .map(
-            (addon) => `
+          .map((addon) => {
+            const frequency = getAddonFrequencyData(addon.id);
+            return `
           <div class="addon-item">
             <label class="addon-info" for="${addon.id}">
               <input class="addon-check" type="checkbox" id="${addon.id}" ${state.addons.has(addon.id) ? "checked" : ""} />
               <div class="addon-copy">
                 ${addon.label} <span class="badge">${addon.badge}</span>
-                <small>${currency(addon.price)} ${addon.frequency}</small>
+                <small>${frequency ? frequency.detail : ""}</small>
               </div>
             </label>
             <a class="addon-edit" href="javascript:void(0)" data-addon-edit="${addon.id}">Edit →</a>
           </div>
-        `
-          )
+        `;
+          })
           .join("");
 
         addonList.querySelectorAll("input[type='checkbox']").forEach((checkbox) => {
           checkbox.addEventListener("change", (event) => {
             if (event.target.checked) {
               state.addons.add(event.target.id);
+              ensureAddonSetting(event.target.id);
             } else {
               state.addons.delete(event.target.id);
             }
             addOnBtn.textContent = `Add (${state.addons.size})`;
+            renderLineItems();
+            renderOrderSummary();
           });
         });
 
@@ -626,9 +744,7 @@
           button.addEventListener("click", (event) => {
             event.preventDefault();
             event.stopPropagation();
-            const addonId = button.dataset.addonEdit;
-            const addon = addons.find((item) => item.id === addonId);
-            alert(`Edit settings for ${addon?.label || "this addon"} (static demo).`);
+            openAddonEditor(button.dataset.addonEdit);
           });
         });
 
@@ -637,7 +753,19 @@
 
       function renderLineItems() {
         const plan = getPlan();
-        const addonItems = Array.from(state.addons).map((id) => addons.find((addon) => addon.id === id));
+        const addonItems = Array.from(state.addons)
+          .map((id) => {
+            const addon = getAddon(id);
+            if (!addon) return null;
+            const frequency = getAddonFrequencyData(id);
+            return {
+              label: addon.label,
+              detail: frequency ? frequency.detail : "",
+              price: currency(frequency ? frequency.price : 0),
+              badge: addon.badge,
+            };
+          })
+          .filter(Boolean);
 
         const items = [
           {
@@ -645,12 +773,7 @@
             detail: plan.billing,
             price: currency(plan.price),
           },
-          ...addonItems.map((addon) => ({
-            label: addon.label,
-            detail: addon.frequency,
-            price: currency(addon.price),
-            badge: addon.badge,
-          })),
+          ...addonItems,
         ];
 
         lineItems.innerHTML = items
@@ -673,7 +796,14 @@
 
       function renderOrderSummary() {
         const plan = getPlan();
-        const addonItems = Array.from(state.addons).map((id) => addons.find((addon) => addon.id === id));
+        const addonItems = Array.from(state.addons)
+          .map((id) => {
+            const addon = getAddon(id);
+            const frequency = getAddonFrequencyData(id);
+            return addon && frequency ? { label: addon.label, price: frequency.price } : null;
+          })
+          .filter(Boolean);
+
         const total = plan.price + addonItems.reduce((sum, addon) => sum + addon.price, 0);
 
         orderList.innerHTML = [
@@ -693,12 +823,55 @@
         document.querySelectorAll('[data-ref="planPrice"]').forEach((el) => (el.textContent = currency(plan.price)));
       }
 
+      function renderAddonEditor() {
+        const addon = getAddon(state.currentAddonEdit);
+        if (!addon) return;
+        ensureAddonSetting(addon.id);
+        const selectedFrequency = getAddonFrequencyData(addon.id)?.id;
+
+        addonEditName.textContent = addon.label;
+        addonEditBadge.textContent = addon.badge;
+        addonEditDesc.textContent = addon.description;
+
+        addonEditOptions.innerHTML = addon.frequencies
+          .map(
+            (frequency) => `
+          <label class="frequency-option addon-frequency ${selectedFrequency === frequency.id ? "active" : ""}">
+            <input type="radio" name="addon-frequency" value="${frequency.id}" ${selectedFrequency === frequency.id ? "checked" : ""} />
+            <div>
+              <strong>${frequency.label}</strong>
+              <small>${frequency.explainer}</small>
+            </div>
+            <strong>${currency(frequency.price)}</strong>
+          </label>
+        `
+          )
+          .join("");
+
+        addonEditOptions.querySelectorAll('input[name="addon-frequency"]').forEach((radio) => {
+          radio.addEventListener("change", (event) => {
+            state.addonSettings[addon.id].frequency = event.target.value;
+            renderAddonEditor();
+          });
+        });
+      }
+
+      function openAddonEditor(addonId) {
+        state.currentAddonEdit = addonId;
+        ensureAddonSetting(addonId);
+        renderAddonEditor();
+        showScreen("addon-edit");
+      }
+
       function renderAll() {
         renderPlanOptions();
         renderAddonList();
         renderLineItems();
         renderOrderSummary();
         renderPlanSummary();
+        if (state.currentAddonEdit) {
+          renderAddonEditor();
+        }
       }
 
       openDemo.addEventListener("click", openOverlay);
@@ -724,7 +897,10 @@
       document.getElementById("update-btn").addEventListener("click", () => {
         const payload = {
           plan: state.planId,
-          addons: Array.from(state.addons),
+          addons: Array.from(state.addons).map((addonId) => ({
+            id: addonId,
+            frequency: getAddonFrequencyData(addonId)?.id,
+          })),
           coupon: couponInput.value.trim(),
         };
         console.table(payload);
@@ -737,11 +913,18 @@
         renderAll();
       });
 
+      addonEditSave.addEventListener("click", () => {
+        if (!state.currentAddonEdit) return;
+        renderAll();
+        showScreen("addons");
+      });
+
       planSelect.addEventListener("change", (event) => {
         state.planId = event.target.value;
         renderAll();
       });
 
+      state.addons.forEach((addonId) => ensureAddonSetting(addonId));
       renderAll();
     </script>
   </body>

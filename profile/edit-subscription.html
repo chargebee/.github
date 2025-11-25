@@ -740,7 +740,6 @@
               </div>
             </div>
             <button class="primary" id="update-btn">Update Subscription →</button>
-            <div class="status" id="update-status">Subscription updated successfully.</div>
           `;
           loadContent(html, () => {
             modalContent.querySelector('[data-action="plan"]').addEventListener("click", () => renderSubscription("plan"));
@@ -750,7 +749,7 @@
               state.coupon = e.target.value;
             });
             modalContent.querySelector("#update-btn").addEventListener("click", () => {
-              modalContent.querySelector("#update-status").classList.add("visible");
+              renderSubscription("details");
             });
             modalContent.querySelectorAll("[data-remove-addon]").forEach((btn) => {
               btn.addEventListener("click", () => {

@@ -138,10 +138,19 @@
       }
 
       .modal__header {
-        padding: 18px 20px;
+        padding: 18px 20px 24px;
         border-bottom: 1px solid var(--border);
         text-align: center;
         position: relative;
+      }
+
+      .progress-bar {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        height: 2px;
+        width: 0;
+        background: var(--blue);
       }
 
       .modal__title {
@@ -170,6 +179,11 @@
         display: flex;
         justify-content: center;
         padding: 12px 0 20px;
+        position: relative;
+      }
+
+      .modal__body.loading .content {
+        opacity: 0;
       }
 
       .content {
@@ -401,6 +415,7 @@
           <div class="modal__header">
             <button class="modal__back" id="back-btn" aria-label="Go back">‹</button>
             <h2 class="modal__title" id="modal-title">Subscription Details</h2>
+            <div class="progress-bar" id="modal-progress"></div>
           </div>
           <div class="modal__body">
             <div class="content" id="modal-content"></div>
@@ -417,6 +432,27 @@
       const backBtn = document.getElementById("back-btn");
       const modalTitle = document.getElementById("modal-title");
       const modalContent = document.getElementById("modal-content");
+      const modalBody = document.querySelector(".modal__body");
+      const progressBar = document.getElementById("modal-progress");
+      const LOADER_DURATION = 450;
+
+      function loadContent(html, afterRender) {
+        modalBody.classList.add("loading");
+        modalContent.innerHTML = "";
+        progressBar.style.transition = "none";
+        progressBar.style.width = "0%";
+        requestAnimationFrame(() => {
+          progressBar.style.transition = `width ${LOADER_DURATION}ms ease`;
+          progressBar.style.width = "100%";
+        });
+        setTimeout(() => {
+          modalBody.classList.remove("loading");
+          progressBar.style.transition = "none";
+          progressBar.style.width = "0%";
+          modalContent.innerHTML = html;
+          afterRender?.();
+        }, LOADER_DURATION);
+      }
 
       const plans = [
         { id: "keep-moving-monthly", name: "Plan - Keep Moving", price: 300, cycle: "Billed every month", label: "Monthly · $300.00" },
@@ -610,7 +646,7 @@
         const plan = getPlan();
 
         if (screen === "details") {
-          modalContent.innerHTML = `
+          const html = `
             <div class="plan">
               <div class="plan__name">${plan.name}</div>
               <div class="plan__price">$${plan.price.toFixed(2)} <span class="plan__cycle">${plan.cycle}</span></div>
@@ -642,12 +678,14 @@
               <button class="link">Cancel Subscription</button>
             </div>
           `;
-          modalContent.querySelector('[data-link="edit"]').addEventListener("click", () => renderSubscription("edit"));
+          loadContent(html, () => {
+            modalContent.querySelector('[data-link="edit"]').addEventListener("click", () => renderSubscription("edit"));
+          });
           return;
         }
 
         if (screen === "edit") {
-          modalContent.innerHTML = `
+          const html = `
             <div class="card" style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;margin-bottom:12px;">
               <div>
                 <div class="plan__name">Plan - Keep Moving</div>
@@ -692,27 +730,28 @@
             <button class="primary" id="update-btn">Update Subscription →</button>
             <div class="status" id="update-status">Subscription updated successfully.</div>
           `;
-
-          modalContent.querySelector('[data-action="plan"]').addEventListener("click", () => renderSubscription("plan"));
-          modalContent.querySelector('[data-action="addons"]').addEventListener("click", () => renderSubscription("addons"));
-          modalContent.querySelector('[data-action="summary"]').addEventListener("click", () => renderSubscription("summary"));
-          modalContent.querySelector("#coupon").addEventListener("input", (e) => {
-            state.coupon = e.target.value;
-          });
-          modalContent.querySelector("#update-btn").addEventListener("click", () => {
-            modalContent.querySelector("#update-status").classList.add("visible");
-          });
-          modalContent.querySelectorAll("[data-remove-addon]").forEach((btn) => {
-            btn.addEventListener("click", () => {
-              state.addons.delete(btn.dataset.removeAddon);
-              renderSubscription("edit");
+          loadContent(html, () => {
+            modalContent.querySelector('[data-action="plan"]').addEventListener("click", () => renderSubscription("plan"));
+            modalContent.querySelector('[data-action="addons"]').addEventListener("click", () => renderSubscription("addons"));
+            modalContent.querySelector('[data-action="summary"]').addEventListener("click", () => renderSubscription("summary"));
+            modalContent.querySelector("#coupon").addEventListener("input", (e) => {
+              state.coupon = e.target.value;
+            });
+            modalContent.querySelector("#update-btn").addEventListener("click", () => {
+              modalContent.querySelector("#update-status").classList.add("visible");
+            });
+            modalContent.querySelectorAll("[data-remove-addon]").forEach((btn) => {
+              btn.addEventListener("click", () => {
+                state.addons.delete(btn.dataset.removeAddon);
+                renderSubscription("edit");
+              });
             });
           });
           return;
         }
 
         if (screen === "plan") {
-          modalContent.innerHTML = plans
+          const html = plans
             .map(
               (p) => `
             <div class="list-option ${p.id === state.planId ? "active" : ""}" data-plan="${p.id}">
@@ -722,10 +761,12 @@
           `,
             )
             .join("");
-          modalContent.querySelectorAll("[data-plan]").forEach((option) => {
-            option.addEventListener("click", () => {
-              state.planId = option.dataset.plan;
-              renderSubscription("edit");
+          loadContent(html, () => {
+            modalContent.querySelectorAll("[data-plan]").forEach((option) => {
+              option.addEventListener("click", () => {
+                state.planId = option.dataset.plan;
+                renderSubscription("edit");
+              });
             });
           });
           return;
@@ -735,7 +776,7 @@
           if (previousScreen !== "addons") {
             state.pendingAddons = new Set(state.addons);
           }
-          modalContent.innerHTML = addons
+          const html = addons
             .map((addon) => {
               const selected = state.pendingAddons.has(addon.id);
               const freq = getAddonFrequency(addon.id);
@@ -755,32 +796,33 @@
             `;
             })
             .join("") + `<button class="primary" id="addons-save">Done</button>`;
-
-          modalContent.querySelectorAll('input[type="checkbox"]').forEach((checkbox) => {
-            checkbox.addEventListener("change", (e) => {
-              const id = e.target.dataset.addon;
-              if (e.target.checked) {
-                state.pendingAddons.add(id);
-                ensureAddonSetting(id);
-              } else {
-                state.pendingAddons.delete(id);
-              }
-              renderSubscription("addons");
+          loadContent(html, () => {
+            modalContent.querySelectorAll('input[type="checkbox"]').forEach((checkbox) => {
+              checkbox.addEventListener("change", (e) => {
+                const id = e.target.dataset.addon;
+                if (e.target.checked) {
+                  state.pendingAddons.add(id);
+                  ensureAddonSetting(id);
+                } else {
+                  state.pendingAddons.delete(id);
+                }
+                renderSubscription("addons");
+              });
             });
-          });
 
-          modalContent.querySelectorAll("[data-edit-addon]").forEach((btn) => {
-            btn.addEventListener("click", () => {
-              state.currentAddonEdit = btn.dataset.editAddon;
-              const currentFreq = getAddonFrequency(state.currentAddonEdit);
-              state.tempAddonFrequency = currentFreq?.id || null;
-              renderSubscription("addonEdit");
+            modalContent.querySelectorAll("[data-edit-addon]").forEach((btn) => {
+              btn.addEventListener("click", () => {
+                state.currentAddonEdit = btn.dataset.editAddon;
+                const currentFreq = getAddonFrequency(state.currentAddonEdit);
+                state.tempAddonFrequency = currentFreq?.id || null;
+                renderSubscription("addonEdit");
+              });
             });
-          });
 
-          modalContent.querySelector("#addons-save").addEventListener("click", () => {
-            state.addons = new Set(state.pendingAddons);
-            renderSubscription("edit");
+            modalContent.querySelector("#addons-save").addEventListener("click", () => {
+              state.addons = new Set(state.pendingAddons);
+              renderSubscription("edit");
+            });
           });
           return;
         }
@@ -788,7 +830,7 @@
         if (screen === "addonEdit") {
           const addon = addons.find((a) => a.id === state.currentAddonEdit);
           const selected = state.tempAddonFrequency || getAddonFrequency(addon.id)?.id;
-          modalContent.innerHTML = `
+          const html = `
             <div class="plan">
               <div class="plan__name">${addon.label}</div>
               <p class="plan__cycle">${addon.description}</p>
@@ -805,19 +847,21 @@
               .join("")}
             <button class="primary" id="addon-edit-save">Update →</button>
           `;
-          const freqOptions = modalContent.querySelectorAll("[data-freq]");
-          freqOptions.forEach((option) => {
-            option.addEventListener("click", () => {
-              state.tempAddonFrequency = option.dataset.freq;
-              freqOptions.forEach((node) => node.classList.toggle("active", node === option));
+          loadContent(html, () => {
+            const freqOptions = modalContent.querySelectorAll("[data-freq]");
+            freqOptions.forEach((option) => {
+              option.addEventListener("click", () => {
+                state.tempAddonFrequency = option.dataset.freq;
+                freqOptions.forEach((node) => node.classList.toggle("active", node === option));
+              });
             });
-          });
-          modalContent.querySelector("#addon-edit-save").addEventListener("click", () => {
-            if (state.tempAddonFrequency) {
-              state.addonSettings[addon.id].frequency = state.tempAddonFrequency;
-            }
-            state.tempAddonFrequency = null;
-            renderSubscription("addons");
+            modalContent.querySelector("#addon-edit-save").addEventListener("click", () => {
+              if (state.tempAddonFrequency) {
+                state.addonSettings[addon.id].frequency = state.tempAddonFrequency;
+              }
+              state.tempAddonFrequency = null;
+              renderSubscription("addons");
+            });
           });
           return;
         }
@@ -834,7 +878,7 @@
                       </li>`;
             })
             .join("");
-          modalContent.innerHTML = `
+          const html = `
             <div class="plan">
               <div class="plan__name">Charges on Dec 19, 2025</div>
             </div>
@@ -856,6 +900,7 @@
               </div>
             </div>
           `;
+          loadContent(html);
           return;
         }
       }
@@ -874,16 +919,16 @@
         button.addEventListener("click", () => {
           const key = button.dataset.widget;
           openModal();
-          if (key === "subscription") {
-            renderSubscription("details");
-          } else {
-            backBtn.style.display = "none";
-            modalTitle.textContent = key
-              .split(" ")
-              .map((word) => word[0].toUpperCase() + word.slice(1))
-              .join(" ");
-            modalContent.innerHTML = genericWidgets[key]();
-          }
+        if (key === "subscription") {
+          renderSubscription("details");
+        } else {
+          backBtn.style.display = "none";
+          modalTitle.textContent = key
+            .split(" ")
+            .map((word) => word[0].toUpperCase() + word.slice(1))
+            .join(" ");
+          loadContent(genericWidgets[key]());
+        }
         });
       });
 

@@ -224,6 +224,8 @@
         color: var(--blue);
         font-weight: 600;
         cursor: pointer;
+        display: inline-flex;
+        align-items: center;
       }
 
       .card {
@@ -724,7 +726,7 @@
                 <div class="row__content">
                   Your next charge $<span id="next-charge">${calculateTotal().toFixed(2)}</span> will be on Dec 19, 2025 via VISA ending 1111
                 </div>
-                <button class="charge-link" data-action="summary">Summary →</button>
+                <button class="charge-link" aria-label="View summary" data-action="summary">→</button>
               </div>
             </div>
             <button class="primary" id="update-btn">Update Subscription →</button>
@@ -789,7 +791,7 @@
                       <input type="checkbox" data-addon="${addon.id}" ${selected ? "checked" : ""} />
                       <span>${freq?.label || addon.frequencies[0].label}</span>
                     </label>
-                    ${selected ? `<button class="link" data-edit-addon="${addon.id}">Edit →</button>` : ""}
+                    ${selected ? `<button class="link" style="margin-left:auto;" data-edit-addon="${addon.id}">Edit →</button>` : ""}
                   </div>
                 </div>
               </div>

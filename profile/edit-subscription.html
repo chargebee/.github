@@ -419,26 +419,9 @@
       const backBtn = document.getElementById("back-btn");
       const modalTitle = document.getElementById("modal-title");
       const modalContent = document.getElementById("modal-content");
-      const modalBody = document.querySelector(".modal__body");
-      const progressBar = document.getElementById("modal-progress");
-      const LOADER_DURATION = 450;
-
       function loadContent(html, afterRender) {
-        modalBody.classList.add("loading");
-        modalContent.innerHTML = "";
-        progressBar.style.transition = "none";
-        progressBar.style.width = "0%";
-        requestAnimationFrame(() => {
-          progressBar.style.transition = `width ${LOADER_DURATION}ms ease`;
-          progressBar.style.width = "100%";
-        });
-        setTimeout(() => {
-          modalBody.classList.remove("loading");
-          progressBar.style.transition = "none";
-          progressBar.style.width = "0%";
-          modalContent.innerHTML = html;
-          afterRender?.();
-        }, LOADER_DURATION);
+        modalContent.innerHTML = html;
+        afterRender?.();
       }
 
       const plans = [

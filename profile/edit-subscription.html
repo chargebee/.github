@@ -6,7 +6,10 @@
     <title>Portal Widgets</title>
     <style>
       :root {
-        --modal-w: 420px;
+        --modal-w: 400px;
+        --modal-h: 526.58px;
+        --content-w: 350px;
+        --content-h: 438.58px;
         --overlay: rgba(15, 17, 21, 0.7);
         --panel: #ffffff;
         --bg: rgba(11, 18, 32, 0.95);
@@ -103,8 +106,9 @@
 
       .modal {
         width: var(--modal-w);
+        height: var(--modal-h);
         background: var(--panel);
-        border-radius: 6px;
+        border-radius: 12px;
         box-shadow: var(--shadow);
         overflow: visible;
         display: none;
@@ -187,8 +191,8 @@
       }
 
       .content {
-        width: calc(var(--modal-w) - 40px);
-        height: 100%;
+        width: var(--content-w);
+        height: var(--content-h);
         overflow-y: auto;
       }
 
@@ -448,7 +452,15 @@
       const progressBar = document.getElementById("modal-progress");
       const LOADER_DURATION = 450;
 
-      function loadContent(html, afterRender) {
+      function loadContent(html, afterRender, skipLoader = false) {
+        if (skipLoader) {
+          modalBody.classList.remove("loading");
+          progressBar.style.transition = "none";
+          progressBar.style.width = "0%";
+          modalContent.innerHTML = html;
+          afterRender?.();
+          return;
+        }
         modalBody.classList.add("loading");
         modalContent.innerHTML = "";
         progressBar.style.transition = "none";
@@ -646,7 +658,7 @@
         return planPrice + addonsTotal;
       }
 
-      function renderSubscription(screen) {
+      function renderSubscription(screen, skipLoader = false) {
         const previousScreen = state.currentScreen;
         state.currentScreen = screen;
         if (screen !== "addonEdit") {
@@ -692,7 +704,7 @@
           `;
           loadContent(html, () => {
             modalContent.querySelector('[data-link="edit"]').addEventListener("click", () => renderSubscription("edit"));
-          });
+          }, skipLoader);
           return;
         }
 
@@ -754,10 +766,10 @@
             modalContent.querySelectorAll("[data-remove-addon]").forEach((btn) => {
               btn.addEventListener("click", () => {
                 state.addons.delete(btn.dataset.removeAddon);
-                renderSubscription("edit");
+                renderSubscription("edit", true);
               });
             });
-          });
+          }, skipLoader);
           return;
         }
 
@@ -779,7 +791,7 @@
                 renderSubscription("edit");
               });
             });
-          });
+          }, skipLoader);
           return;
         }
 
@@ -807,34 +819,38 @@
             `;
             })
             .join("") + `<button class="primary" id="addons-save">Done</button>`;
-          loadContent(html, () => {
-            modalContent.querySelectorAll('input[type="checkbox"]').forEach((checkbox) => {
-              checkbox.addEventListener("change", (e) => {
-                const id = e.target.dataset.addon;
-                if (e.target.checked) {
-                  state.pendingAddons.add(id);
-                  ensureAddonSetting(id);
-                } else {
-                  state.pendingAddons.delete(id);
-                }
-                renderSubscription("addons");
+          loadContent(
+            html,
+            () => {
+              modalContent.querySelectorAll('input[type="checkbox"]').forEach((checkbox) => {
+                checkbox.addEventListener("change", (e) => {
+                  const id = e.target.dataset.addon;
+                  if (e.target.checked) {
+                    state.pendingAddons.add(id);
+                    ensureAddonSetting(id);
+                  } else {
+                    state.pendingAddons.delete(id);
+                  }
+                  renderSubscription("addons", true);
+                });
               });
-            });
 
-            modalContent.querySelectorAll("[data-edit-addon]").forEach((btn) => {
-              btn.addEventListener("click", () => {
-                state.currentAddonEdit = btn.dataset.editAddon;
-                const currentFreq = getAddonFrequency(state.currentAddonEdit);
-                state.tempAddonFrequency = currentFreq?.id || null;
-                renderSubscription("addonEdit");
+              modalContent.querySelectorAll("[data-edit-addon]").forEach((btn) => {
+                btn.addEventListener("click", () => {
+                  state.currentAddonEdit = btn.dataset.editAddon;
+                  const currentFreq = getAddonFrequency(state.currentAddonEdit);
+                  state.tempAddonFrequency = currentFreq?.id || null;
+                  renderSubscription("addonEdit");
+                });
               });
-            });
 
-            modalContent.querySelector("#addons-save").addEventListener("click", () => {
-              state.addons = new Set(state.pendingAddons);
-              renderSubscription("edit");
-            });
-          });
+              modalContent.querySelector("#addons-save").addEventListener("click", () => {
+                state.addons = new Set(state.pendingAddons);
+                renderSubscription("edit");
+              });
+            },
+            skipLoader,
+          );
           return;
         }
 
@@ -858,22 +874,26 @@
               .join("")}
             <button class="primary" id="addon-edit-save">Update →</button>
           `;
-          loadContent(html, () => {
-            const freqOptions = modalContent.querySelectorAll("[data-freq]");
-            freqOptions.forEach((option) => {
-              option.addEventListener("click", () => {
-                state.tempAddonFrequency = option.dataset.freq;
-                freqOptions.forEach((node) => node.classList.toggle("active", node === option));
+          loadContent(
+            html,
+            () => {
+              const freqOptions = modalContent.querySelectorAll("[data-freq]");
+              freqOptions.forEach((option) => {
+                option.addEventListener("click", () => {
+                  state.tempAddonFrequency = option.dataset.freq;
+                  freqOptions.forEach((node) => node.classList.toggle("active", node === option));
+                });
               });
-            });
-            modalContent.querySelector("#addon-edit-save").addEventListener("click", () => {
-              if (state.tempAddonFrequency) {
-                state.addonSettings[addon.id].frequency = state.tempAddonFrequency;
-              }
-              state.tempAddonFrequency = null;
-              renderSubscription("addons");
-            });
-          });
+              modalContent.querySelector("#addon-edit-save").addEventListener("click", () => {
+                if (state.tempAddonFrequency) {
+                  state.addonSettings[addon.id].frequency = state.tempAddonFrequency;
+                }
+                state.tempAddonFrequency = null;
+                renderSubscription("addons");
+              });
+            },
+            skipLoader,
+          );
           return;
         }
 
@@ -911,7 +931,7 @@
               </div>
             </div>
           `;
-          loadContent(html);
+          loadContent(html, null, skipLoader);
           return;
         }
       }

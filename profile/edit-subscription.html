@@ -244,6 +244,16 @@
         padding-right: 22px;
       }
 
+      .row__content.addon-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .row__content.addon-row .link {
+        margin-left: auto;
+      }
+
       .row__chev {
         position: absolute;
         right: 10px;
@@ -754,12 +764,12 @@
               <div class="card">
                 <div class="row">
                   <div class="row__label">${addon.label}</div>
-                  <div class="row__content">
+                  <div class="row__content addon-row">
                     <label style="display:flex;align-items:center;gap:8px;">
                       <input type="checkbox" data-addon="${addon.id}" ${selected ? "checked" : ""} />
                       <span>${freq?.label || addon.frequencies[0].label}</span>
                     </label>
-                    ${selected ? `<button class="link" style="margin-left:auto;" data-edit-addon="${addon.id}">Edit →</button>` : ""}
+                    ${selected ? `<button class="link" data-edit-addon="${addon.id}">Edit →</button>` : ""}
                   </div>
                 </div>
               </div>

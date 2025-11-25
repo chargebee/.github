@@ -106,12 +106,13 @@
         background: var(--panel);
         border-radius: 6px;
         box-shadow: var(--shadow);
-        overflow: hidden;
+        overflow: visible;
         display: none;
         flex-direction: column;
         position: relative;
         pointer-events: auto;
         z-index: 1;
+        padding-top: 16px;
       }
 
       .modal.active {
@@ -120,8 +121,8 @@
 
       .close {
         position: absolute;
-        top: 12px;
-        right: 12px;
+        top: -16px;
+        right: -16px;
         width: 32px;
         height: 32px;
         border-radius: 999px;
@@ -134,14 +135,23 @@
         color: #596275;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
         cursor: pointer;
-        z-index: 2;
+        z-index: 3;
       }
 
       .modal__header {
-        padding: 18px 20px;
+        padding: 18px 20px 26px;
         border-bottom: 1px solid var(--border);
         text-align: center;
         position: relative;
+      }
+
+      .progress-bar {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        height: 2px;
+        width: 0;
+        background: var(--blue);
       }
 
       .modal__title {
@@ -170,6 +180,10 @@
         display: flex;
         justify-content: center;
         padding: 12px 0 20px;
+      }
+
+      .modal__body.loading .content {
+        opacity: 0;
       }
 
       .content {
@@ -413,6 +427,7 @@
           <div class="modal__header">
             <button class="modal__back" id="back-btn" aria-label="Go back">‹</button>
             <h2 class="modal__title" id="modal-title">Subscription Details</h2>
+            <div class="progress-bar" id="modal-progress"></div>
           </div>
           <div class="modal__body">
             <div class="content" id="modal-content"></div>
@@ -429,9 +444,26 @@
       const backBtn = document.getElementById("back-btn");
       const modalTitle = document.getElementById("modal-title");
       const modalContent = document.getElementById("modal-content");
+      const modalBody = document.querySelector(".modal__body");
+      const progressBar = document.getElementById("modal-progress");
+      const LOADER_DURATION = 450;
+
       function loadContent(html, afterRender) {
-        modalContent.innerHTML = html;
-        afterRender?.();
+        modalBody.classList.add("loading");
+        modalContent.innerHTML = "";
+        progressBar.style.transition = "none";
+        progressBar.style.width = "0%";
+        requestAnimationFrame(() => {
+          progressBar.style.transition = `width ${LOADER_DURATION}ms ease`;
+          progressBar.style.width = "100%";
+        });
+        setTimeout(() => {
+          modalBody.classList.remove("loading");
+          progressBar.style.transition = "none";
+          progressBar.style.width = "0%";
+          modalContent.innerHTML = html;
+          afterRender?.();
+        }, LOADER_DURATION);
       }
 
       const plans = [

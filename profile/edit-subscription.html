@@ -1,0 +1,979 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Portal Widgets</title>
+    <style>
+      :root {
+        --modal-w: 400px;
+        --modal-h: 526.58px;
+        --content-w: 350px;
+        --content-h: 438.58px;
+        --overlay: rgba(15, 17, 21, 0.7);
+        --panel: #ffffff;
+        --bg: rgba(11, 18, 32, 0.95);
+        --pale: #f8fafc;
+        --blue: #60a5fa;
+        --text-dark: #212128;
+        --text-mid: #334155;
+        --text-light: #64748b;
+        --border: #e6eaf0;
+        --border-2: #edf1f7;
+        --note: #f0f6ff;
+        --shadow: 0 8px 20px rgba(2, 6, 23, 0.18), 0 4px 8px rgba(2, 6, 23, 0.1);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        font-family: Inter, ui-sans-serif, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+        background: var(--bg);
+        color: var(--text-dark);
+        -webkit-font-smoothing: antialiased;
+      }
+
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 32px 16px 64px;
+      }
+
+      .app {
+        width: min(1100px, 100%);
+        display: flex;
+        gap: 32px;
+      }
+
+      aside {
+        width: 320px;
+      }
+
+      h1 {
+        color: #e0ecff;
+        font-size: clamp(1.75rem, 3vw, 2.4rem);
+        margin: 0 0 24px;
+      }
+
+      ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      li {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 14px 18px;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+      }
+
+      li span {
+        color: #f8fafc;
+        font-weight: 600;
+      }
+
+      button,
+      .link {
+        border: none;
+        background: transparent;
+        color: var(--blue);
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      .stage {
+        flex: 1;
+        min-height: 520px;
+        display: flex;
+        justify-content: flex-end;
+        align-items: flex-start;
+        padding-right: 12px;
+        position: relative;
+      }
+
+      .modal {
+        width: var(--modal-w);
+        height: var(--modal-h);
+        background: var(--panel);
+        border-radius: 12px;
+        box-shadow: var(--shadow);
+        overflow: visible;
+        display: none;
+        flex-direction: column;
+        position: relative;
+        pointer-events: auto;
+        z-index: 1;
+        padding-top: 16px;
+      }
+
+      .modal.active {
+        display: flex;
+      }
+
+      .close {
+        position: absolute;
+        top: -16px;
+        right: -16px;
+        width: 32px;
+        height: 32px;
+        border-radius: 999px;
+        background: #f1f3f6;
+        border: 1px solid #d7dbe1;
+        display: grid;
+        place-items: center;
+        font-size: 16px;
+        font-weight: 700;
+        color: #596275;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+        cursor: pointer;
+        z-index: 3;
+      }
+
+      .modal__header {
+        padding: 18px 20px 26px;
+        border-bottom: 1px solid var(--border);
+        text-align: center;
+        position: relative;
+      }
+
+      .progress-bar {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        height: 2px;
+        width: 0;
+        background: var(--blue);
+      }
+
+      .modal__title {
+        margin: 0;
+        font-weight: 700;
+        font-size: 18px;
+        color: var(--blue);
+      }
+
+      .modal__back {
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        border: none;
+        background: none;
+        font-size: 20px;
+        color: var(--text-mid);
+        cursor: pointer;
+        display: none;
+      }
+
+      .modal__body {
+        background: var(--pale);
+        min-height: 438px;
+        display: flex;
+        justify-content: center;
+        padding: 12px 0 20px;
+      }
+
+      .modal__body.loading .content {
+        opacity: 0;
+      }
+
+      .content {
+        width: var(--content-w);
+        height: var(--content-h);
+        overflow-y: auto;
+      }
+
+      .plan {
+        margin-bottom: 16px;
+      }
+
+      .plan__name {
+        font-weight: 700;
+        font-size: 16px;
+        margin: 0 0 4px;
+      }
+
+      .plan__price {
+        font-weight: 700;
+        font-size: 16px;
+      }
+
+      .plan__cycle {
+        margin-left: 6px;
+        color: var(--text-light);
+        font-size: 13px;
+      }
+
+      .row--charge {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .charge-link {
+        color: var(--blue);
+        font-weight: 600;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+      }
+
+      .card {
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: 4px;
+      }
+
+      .row {
+        padding: 14px 14px 12px;
+        border-top: 1px solid var(--border-2);
+        position: relative;
+      }
+
+      .row:first-child {
+        border-top: none;
+      }
+
+      .row__label {
+        font-weight: 700;
+        font-size: 14px;
+        color: var(--text-mid);
+        margin-bottom: 8px;
+      }
+
+      .row__content {
+        color: var(--text-mid);
+        font-size: 14px;
+        line-height: 1.4;
+        padding-right: 22px;
+      }
+
+      .row__content.addon-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .row__content.addon-row .link {
+        margin-left: auto;
+      }
+
+      .row__chev {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #a0aec0;
+        font-size: 18px;
+      }
+
+      .badge {
+        background: #eef2ff;
+        border: 1px solid #c7d2fe;
+        color: #1d4ed8;
+        border-radius: 4px;
+        font-size: 11px;
+        font-weight: 800;
+        padding: 2px 6px;
+      }
+
+      .note {
+        margin-top: 12px;
+        background: var(--note);
+        border: 1px solid rgba(0, 0, 40, 0.08);
+        border-radius: 4px;
+        font-size: 12px;
+        color: var(--text-dark);
+        line-height: 16px;
+        box-shadow: 0 0 2px rgba(0, 0, 40, 0.08);
+        display: flex;
+        gap: 8px;
+        padding: 10px;
+      }
+
+      .note .i {
+        width: 18px;
+        height: 18px;
+        border-radius: 999px;
+        background: #dbeafe;
+        display: grid;
+        place-items: center;
+        color: var(--blue);
+        font-weight: 700;
+        font-size: 12px;
+        flex: 0 0 18px;
+      }
+
+      .summary-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--blue);
+        cursor: pointer;
+        font-weight: 600;
+        margin-top: 8px;
+      }
+
+      .summary-trigger {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        cursor: pointer;
+        color: var(--text-mid);
+      }
+
+      .summary-trigger .summary-arrow {
+        font-size: 16px;
+        color: var(--blue);
+        line-height: 1.3;
+      }
+
+      .links {
+        margin: 16px 0 0;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        align-items: flex-start;
+      }
+
+      .list-option {
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        padding: 12px;
+        margin-bottom: 10px;
+        cursor: pointer;
+      }
+
+      .list-option.active {
+        border-color: var(--blue);
+        box-shadow: 0 0 0 1px rgba(96, 165, 250, 0.3);
+      }
+
+      .input {
+        width: 100%;
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        padding: 10px;
+        font-size: 14px;
+        margin: 12px 0;
+      }
+
+      .primary {
+        width: 100%;
+        border: none;
+        border-radius: 4px;
+        padding: 12px;
+        background: var(--blue);
+        color: #fff;
+        font-weight: 600;
+        cursor: pointer;
+        margin-top: 12px;
+      }
+
+      .status {
+        margin-top: 10px;
+        text-align: center;
+        color: #22c55e;
+        font-weight: 600;
+        display: none;
+      }
+
+      .status.visible {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <aside>
+        <h1>Available Widgets</h1>
+        <ul>
+          <li>
+            <span>View / Edit Subscription details</span>
+            <button data-widget="subscription">Demo</button>
+          </li>
+          <li>
+            <span>Manage payment methods</span>
+            <button data-widget="payments">Demo</button>
+          </li>
+          <li>
+            <span>Billing History</span>
+            <button data-widget="billing">Demo</button>
+          </li>
+          <li>
+            <span>Manage Addresses</span>
+            <button data-widget="addresses">Demo</button>
+          </li>
+          <li>
+            <span>Manage account information</span>
+            <button data-widget="account">Demo</button>
+          </li>
+        </ul>
+      </aside>
+
+      <section class="stage">
+        <article class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" id="modal">
+          <button class="close" aria-label="Close" id="close-btn">✕</button>
+          <div class="modal__header">
+            <button class="modal__back" id="back-btn" aria-label="Go back">‹</button>
+            <h2 class="modal__title" id="modal-title">Subscription Details</h2>
+            <div class="progress-bar" id="modal-progress"></div>
+          </div>
+          <div class="modal__body">
+            <div class="content" id="modal-content"></div>
+          </div>
+        </article>
+      </section>
+    </div>
+
+    <script>
+      const buttons = document.querySelectorAll("button[data-widget]");
+      const modal = document.getElementById("modal");
+      const stage = document.querySelector(".stage");
+      const closeBtn = document.getElementById("close-btn");
+      const backBtn = document.getElementById("back-btn");
+      const modalTitle = document.getElementById("modal-title");
+      const modalContent = document.getElementById("modal-content");
+      const modalBody = document.querySelector(".modal__body");
+      const progressBar = document.getElementById("modal-progress");
+      const LOADER_DURATION = 450;
+
+      function loadContent(html, afterRender, skipLoader = false) {
+        if (skipLoader) {
+          modalBody.classList.remove("loading");
+          progressBar.style.transition = "none";
+          progressBar.style.width = "0%";
+          modalContent.innerHTML = html;
+          afterRender?.();
+          return;
+        }
+        modalBody.classList.add("loading");
+        modalContent.innerHTML = "";
+        progressBar.style.transition = "none";
+        progressBar.style.width = "0%";
+        requestAnimationFrame(() => {
+          progressBar.style.transition = `width ${LOADER_DURATION}ms ease`;
+          progressBar.style.width = "100%";
+        });
+        setTimeout(() => {
+          modalBody.classList.remove("loading");
+          progressBar.style.transition = "none";
+          progressBar.style.width = "0%";
+          modalContent.innerHTML = html;
+          afterRender?.();
+        }, LOADER_DURATION);
+      }
+
+      const plans = [
+        { id: "keep-moving-monthly", name: "Plan - Keep Moving", price: 300, cycle: "Billed every month", label: "Monthly · $300.00" },
+        { id: "keep-moving-annual", name: "Plan - Keep Moving", price: 3200, cycle: "Billed every year", label: "Yearly · $3,200.00" },
+      ];
+
+      const addons = [
+        {
+          id: "zumba",
+          label: "Zumba",
+          badge: "RECOMMENDED",
+          description: "Level-up your cardio with unlimited Zumba sessions.",
+          frequencies: [
+            { id: "monthly", label: "Monthly · $10.00 / month", price: 10, detail: "Billed every month" },
+            { id: "one-time", label: "One-time drop-in · $18.00", price: 18, detail: "One-time purchase" },
+          ],
+          defaultFrequency: "monthly",
+        },
+        {
+          id: "trainer",
+          label: "Personal trainer",
+          badge: "ONE-TIME",
+          description: "Work 1:1 with a trainer for form checks and motivation.",
+          frequencies: [
+            { id: "one-time", label: "One-time session · $20.00", price: 20, detail: "60-minute session" },
+            { id: "monthly", label: "Monthly plan · $70.00 / month", price: 70, detail: "Four sessions per month" },
+          ],
+          defaultFrequency: "one-time",
+        },
+        {
+          id: "locker",
+          label: "Locker access",
+          badge: "MONTHLY",
+          description: "Keep your gear secure with 24/7 locker access.",
+          frequencies: [{ id: "monthly", label: "Monthly · $5.00 / month", price: 5, detail: "Billed every month" }],
+          defaultFrequency: "monthly",
+        },
+      ];
+
+      const state = {
+        currentScreen: "details",
+        planId: plans[0].id,
+        addons: new Set(),
+        pendingAddons: new Set(),
+        addonSettings: {},
+        tempAddonFrequency: null,
+      };
+
+      const screenTitles = {
+        details: "Subscription Details",
+        edit: "Edit Subscription Details",
+        plan: "Change plan",
+        addons: "Add Addons",
+        addonEdit: "Edit addon",
+        summary: "Your order summary",
+      };
+
+      const screenBackMap = {
+        details: null,
+        edit: "details",
+        plan: "edit",
+        addons: "edit",
+        addonEdit: "addons",
+        summary: "edit",
+      };
+
+      const genericWidgets = {
+        payments: () => `
+          <div class="plan">
+            <div class="plan__name">Payment Methods</div>
+          </div>
+          <div class="card">
+            <div class="row">
+              <div class="row__label">Primary</div>
+              <div class="row__content"><span class="badge">VISA</span> ending 1111</div>
+              <div class="row__chev">›</div>
+            </div>
+            <div class="row">
+              <div class="row__label">Backup</div>
+              <div class="row__content"><span class="badge">VISA</span> ending 2222</div>
+              <div class="row__chev">›</div>
+            </div>
+          </div>
+          <div class="note">
+            <div class="i">i</div>
+            <p>Backups come handy when your primary payment fails. Set a backup.</p>
+          </div>
+          <div class="links">
+            <button class="link">Add new</button>
+          </div>
+        `,
+        billing: () => {
+          const invoices = [
+            { id: 788, plan: "Plan - Keep Moving", amount: "$300.00", date: "Nov 19, 2025" },
+            { id: 787, plan: "Trial Plan", amount: "$0.00", date: "Nov 19, 2025" },
+            { id: 785, plan: "Trial Plan", amount: "$0.00", date: "Nov 18, 2025" },
+          ];
+          return `
+            <div class="plan">
+              <div class="plan__name">Billing history</div>
+            </div>
+            <div class="card">
+              ${invoices
+                .map(
+                  (invoice) => `
+                  <div class="row">
+                    <div class="row__label">Invoice #${invoice.id}</div>
+                    <div class="row__content">
+                      ${invoice.plan}<br />
+                      ${invoice.amount} · ${invoice.date}
+                    </div>
+                    <div class="row__chev">›</div>
+                  </div>
+                `,
+                )
+                .join("")}
+            </div>
+          `;
+        },
+        addresses: () => `
+          <div class="plan">
+            <div class="plan__name">Billing & Shipping Addresses</div>
+          </div>
+          <div class="card">
+            <div class="row">
+              <div class="row__label">Billing</div>
+              <div class="row__content">
+                Edward Fish<br />
+                Reichenbachstraße 31 Ludwigsvorstadt-Isarvorstadt<br />
+                München 80469 Bayern Germany
+              </div>
+            </div>
+            <div class="row">
+              <div class="row__label">Shipping</div>
+              <div class="row__content">
+                Chris Foo<br />
+                Reichenbachstraße Ludwigsvorstadt-Isarvorstadt<br />
+                München 80469 Bayern Germany
+              </div>
+            </div>
+          </div>
+        `,
+        account: () => `
+          <div class="plan">
+            <div class="plan__name">Account Details</div>
+          </div>
+          <div class="card">
+            <div class="row">
+              <div class="row__label">Primary contact</div>
+              <div class="row__content">John Smith<br />tester123@gmail.com</div>
+            </div>
+          </div>
+        `,
+      };
+
+      function ensureAddonSetting(id) {
+        if (!state.addonSettings[id]) {
+          const addon = addons.find((a) => a.id === id);
+          state.addonSettings[id] = { frequency: addon?.defaultFrequency || addon.frequencies[0].id };
+        }
+      }
+
+      function getPlan() {
+        return plans.find((p) => p.id === state.planId) || plans[0];
+      }
+
+      function getAddonFrequency(id) {
+        ensureAddonSetting(id);
+        const addon = addons.find((a) => a.id === id);
+        return addon?.frequencies.find((f) => f.id === state.addonSettings[id].frequency);
+      }
+
+      function calculateTotal() {
+        const planPrice = getPlan().price;
+        const addonsTotal = Array.from(state.addons).reduce((sum, id) => {
+          const freq = getAddonFrequency(id);
+          return sum + (freq?.price || 0);
+        }, 0);
+        return planPrice + addonsTotal;
+      }
+
+      function renderSubscription(screen, skipLoader = false) {
+        const previousScreen = state.currentScreen;
+        state.currentScreen = screen;
+        if (screen !== "addonEdit") {
+          state.tempAddonFrequency = null;
+        }
+        modalTitle.textContent = screenTitles[screen];
+        backBtn.style.display = screenBackMap[screen] ? "inline-flex" : "none";
+
+        const plan = getPlan();
+
+        if (screen === "details") {
+          const html = `
+            <div class="plan">
+              <div class="plan__name">${plan.name}</div>
+              <div class="plan__price">$${plan.price.toFixed(2)} <span class="plan__cycle">${plan.cycle}</span></div>
+            </div>
+            <div class="card">
+              <div class="row">
+                <div class="row__label">Shipping</div>
+                <div class="row__content">
+                  Chris Foo<br />
+                  Reichenbachstraße Ludwigsvorstadt-Isarvorstadt<br />
+                  München 80469 Bayern Germany
+                </div>
+                <div class="row__chev">›</div>
+              </div>
+              <div class="row">
+                <div class="row__label">Paid via</div>
+                <div class="row__content">
+                  <div class="brand"><span class="badge">VISA</span> ending 1111</div>
+                  <div class="note">
+                    <div class="i">i</div>
+                    <p>Make sure to keep this payment method updated, as your backup payment method will not be used for this subscription.</p>
+                  </div>
+                </div>
+                <div class="row__chev">›</div>
+              </div>
+            </div>
+            <div class="links">
+              <button class="link" data-link="edit">Edit Subscription</button>
+              <button class="link">Cancel Subscription</button>
+            </div>
+          `;
+          loadContent(html, () => {
+            modalContent.querySelector('[data-link="edit"]').addEventListener("click", () => renderSubscription("edit"));
+          }, skipLoader);
+          return;
+        }
+
+        if (screen === "edit") {
+          const html = `
+            <div class="card" style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;margin-bottom:12px;">
+              <div>
+                <div class="plan__name">Plan - Keep Moving</div>
+                <div class="plan__price">$${plan.price.toFixed(2)} <span class="plan__cycle">${plan.cycle}</span></div>
+              </div>
+              <button class="link" data-action="plan">Change →</button>
+            </div>
+            <div class="card">
+              <div class="row">
+                <div class="row__label">Addons</div>
+                <div class="row__content">
+                  ${
+                    state.addons.size
+                      ? Array.from(state.addons)
+                          .map((id) => {
+                            const addon = addons.find((a) => a.id === id);
+                            const freq = getAddonFrequency(id);
+                            return `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                        <span>${addon.label}</span>
+                        <span>
+                          $${freq?.price.toFixed(2) || "0.00"}
+                          <button class="link" style="font-size:12px;" data-remove-addon="${id}">remove</button>
+                        </span>
+                      </div>`;
+                          })
+                          .join("")
+                      : "None"
+                  }
+                </div>
+                <button class="link" data-action="addons" style="font-size:13px;font-weight:500;">Add addons</button>
+              </div>
+              <div class="row">
+                <input class="input" type="text" id="coupon" placeholder="Enter coupon code" value="${state.coupon || ""}" />
+              </div>
+              <div class="row row--charge">
+                <div class="row__content">
+                  Your next charge $<span id="next-charge">${calculateTotal().toFixed(2)}</span> will be on Dec 19, 2025 via VISA ending 1111
+                </div>
+                <button class="charge-link" aria-label="View summary" data-action="summary">→</button>
+              </div>
+            </div>
+            <button class="primary" id="update-btn">Update Subscription →</button>
+          `;
+          loadContent(html, () => {
+            modalContent.querySelector('[data-action="plan"]').addEventListener("click", () => renderSubscription("plan"));
+            modalContent.querySelector('[data-action="addons"]').addEventListener("click", () => renderSubscription("addons"));
+            modalContent.querySelector('[data-action="summary"]').addEventListener("click", () => renderSubscription("summary"));
+            modalContent.querySelector("#coupon").addEventListener("input", (e) => {
+              state.coupon = e.target.value;
+            });
+            modalContent.querySelector("#update-btn").addEventListener("click", () => {
+              renderSubscription("details");
+            });
+            modalContent.querySelectorAll("[data-remove-addon]").forEach((btn) => {
+              btn.addEventListener("click", () => {
+                state.addons.delete(btn.dataset.removeAddon);
+                renderSubscription("edit", true);
+              });
+            });
+          }, skipLoader);
+          return;
+        }
+
+        if (screen === "plan") {
+          const html = plans
+            .map(
+              (p) => `
+            <div class="list-option ${p.id === state.planId ? "active" : ""}" data-plan="${p.id}">
+              <strong>${p.name}</strong><br />
+              <small>${p.label}</small>
+            </div>
+          `,
+            )
+            .join("");
+          loadContent(html, () => {
+            modalContent.querySelectorAll("[data-plan]").forEach((option) => {
+              option.addEventListener("click", () => {
+                state.planId = option.dataset.plan;
+                renderSubscription("edit");
+              });
+            });
+          }, skipLoader);
+          return;
+        }
+
+        if (screen === "addons") {
+          if (previousScreen !== "addons") {
+            state.pendingAddons = new Set(state.addons);
+          }
+          const html = addons
+            .map((addon) => {
+              const selected = state.pendingAddons.has(addon.id);
+              const freq = getAddonFrequency(addon.id);
+              return `
+              <div class="card">
+                <div class="row">
+                  <div class="row__label">${addon.label}</div>
+                  <div class="row__content addon-row">
+                    <label style="display:flex;align-items:center;gap:8px;">
+                      <input type="checkbox" data-addon="${addon.id}" ${selected ? "checked" : ""} />
+                      <span>${freq?.label || addon.frequencies[0].label}</span>
+                    </label>
+                    ${selected ? `<button class="link" data-edit-addon="${addon.id}">Edit →</button>` : ""}
+                  </div>
+                </div>
+              </div>
+            `;
+            })
+            .join("") + `<button class="primary" id="addons-save">Done</button>`;
+          loadContent(
+            html,
+            () => {
+              modalContent.querySelectorAll('input[type="checkbox"]').forEach((checkbox) => {
+                checkbox.addEventListener("change", (e) => {
+                  const id = e.target.dataset.addon;
+                  if (e.target.checked) {
+                    state.pendingAddons.add(id);
+                    ensureAddonSetting(id);
+                  } else {
+                    state.pendingAddons.delete(id);
+                  }
+                  renderSubscription("addons", true);
+                });
+              });
+
+              modalContent.querySelectorAll("[data-edit-addon]").forEach((btn) => {
+                btn.addEventListener("click", () => {
+                  state.currentAddonEdit = btn.dataset.editAddon;
+                  const currentFreq = getAddonFrequency(state.currentAddonEdit);
+                  state.tempAddonFrequency = currentFreq?.id || null;
+                  renderSubscription("addonEdit");
+                });
+              });
+
+              modalContent.querySelector("#addons-save").addEventListener("click", () => {
+                state.addons = new Set(state.pendingAddons);
+                renderSubscription("edit");
+              });
+            },
+            skipLoader,
+          );
+          return;
+        }
+
+        if (screen === "addonEdit") {
+          const addon = addons.find((a) => a.id === state.currentAddonEdit);
+          const selected = state.tempAddonFrequency || getAddonFrequency(addon.id)?.id;
+          const html = `
+            <div class="plan">
+              <div class="plan__name">${addon.label}</div>
+              <p class="plan__cycle">${addon.description}</p>
+            </div>
+            ${addon.frequencies
+              .map(
+                (freq) => `
+              <div class="list-option ${freq.id === selected ? "active" : ""}" data-freq="${freq.id}">
+                <strong>${freq.label}</strong><br />
+                <small>${freq.detail}</small>
+              </div>
+            `,
+              )
+              .join("")}
+            <button class="primary" id="addon-edit-save">Update →</button>
+          `;
+          loadContent(
+            html,
+            () => {
+              const freqOptions = modalContent.querySelectorAll("[data-freq]");
+              freqOptions.forEach((option) => {
+                option.addEventListener("click", () => {
+                  state.tempAddonFrequency = option.dataset.freq;
+                  freqOptions.forEach((node) => node.classList.toggle("active", node === option));
+                });
+              });
+              modalContent.querySelector("#addon-edit-save").addEventListener("click", () => {
+                if (state.tempAddonFrequency) {
+                  state.addonSettings[addon.id].frequency = state.tempAddonFrequency;
+                }
+                state.tempAddonFrequency = null;
+                renderSubscription("addons");
+              });
+            },
+            skipLoader,
+          );
+          return;
+        }
+
+        if (screen === "summary") {
+          const planFreq = getPlan();
+          const addonList = Array.from(state.addons)
+            .map((id) => {
+              const addon = addons.find((a) => a.id === id);
+              const freq = getAddonFrequency(id);
+              return `<li class="row" style="border-top:none;display:flex;justify-content:space-between;">
+                        <span>${addon.label}</span>
+                        <strong>$${freq.price.toFixed(2)}</strong>
+                      </li>`;
+            })
+            .join("");
+          const html = `
+            <div class="plan">
+              <div class="plan__name">Charges on Dec 19, 2025</div>
+            </div>
+            <div class="card">
+              <div class="row" style="border-top:none;display:flex;justify-content:space-between;">
+                <span>${planFreq.name}</span>
+                <strong>$${planFreq.price.toFixed(2)}</strong>
+              </div>
+              ${addonList || "<div class='row' style='border-top:none;'>No addons selected</div>"}
+            </div>
+            <div class="card">
+              <div class="row" style="border-top:none;display:flex;justify-content:space-between;">
+                <span>Credits applied</span>
+                <strong>-$8.20</strong>
+              </div>
+              <div class="row" style="display:flex;justify-content:space-between;">
+                <strong>Total</strong>
+                <strong id="order-total">$${(calculateTotal() - 8.2).toFixed(2)}</strong>
+              </div>
+            </div>
+          `;
+          loadContent(html, null, skipLoader);
+          return;
+        }
+      }
+
+      function openModal() {
+        modal.classList.add("active");
+      }
+
+      function closeModal() {
+        modal.classList.remove("active");
+        state.currentScreen = "details";
+        backBtn.style.display = "none";
+      }
+
+      buttons.forEach((button) => {
+        button.addEventListener("click", () => {
+          const key = button.dataset.widget;
+          openModal();
+        if (key === "subscription") {
+          renderSubscription("details");
+        } else {
+          backBtn.style.display = "none";
+          modalTitle.textContent = key
+            .split(" ")
+            .map((word) => word[0].toUpperCase() + word.slice(1))
+            .join(" ");
+          loadContent(genericWidgets[key]());
+        }
+        });
+      });
+
+      closeBtn.addEventListener("click", () => {
+        closeModal();
+      });
+      backBtn.addEventListener("click", () => {
+        const backTarget = screenBackMap[state.currentScreen];
+        if (backTarget) {
+          renderSubscription(backTarget);
+        }
+      });
+
+      ensureAddonSetting("trainer");
+    </script>
+  </body>
+</html>

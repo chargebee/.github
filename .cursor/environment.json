@@ -1,0 +1,17 @@
+{
+  "name": "Chargebee GitHub profile",
+  "install": "pip3 install --user --break-system-packages grip",
+  "terminals": [
+    {
+      "name": "readme-preview",
+      "command": "python3 -m grip profile/README.md 0.0.0.0:6419 --context=chargebee/.github",
+      "description": "Live GitHub-accurate preview of profile/README.md, served at http://localhost:6419"
+    }
+  ],
+  "ports": [
+    {
+      "name": "README preview",
+      "port": 6419
+    }
+  ]
+}
